@@ -1175,249 +1175,26 @@ right).
     h     Go High/98/3D                            delta <- (0,0,-1)
     i     Input File/98/f      Va f STR  Va Vb     inputs file
     j     Jump Forward/98      s                   pos <- pos + delta * s
-    
-
-* * * * *
-
-107
-
-`k`
-
-Iterate/98
-
-n
-
- 
-
-execute next instruction now, n times
-
-108
-
-`l`
-
-Go Low/98/3D
-
- 
-
- 
-
-delta \<- (0,0,1)
-
-109
-
-`m`
-
-High-Low If/98/3D
-
-b
-
- 
-
-delta \<- if (b) (0,0,-1) else (0,0,1)
-
-110
-
-`n`
-
-Clear Stack/98
-
-en..e1
-
- 
-
- 
-
-111
-
-`o`
-
-Output File/98/f
-
-Va Vb f STR
-
- 
-
-outputs file
-
-112
-
-`p`
-
-Put
-
-v Va
-
- 
-
-store-funge-space(offset+Va,v)
-
-113
-
-`q`
-
-Quit/98
-
-r
-
- 
-
-immediate exit, returncode = r
-
-114
-
-`r`
-
-Reflect/98
-
- 
-
- 
-
-delta \<- delta \* -1
-
-115
-
-`s`
-
-Store Character/98
-
-c
-
- 
-
-store-funge-space(position+delta,v)
-
-116
-
-`t`
-
-Split/98/c
-
- 
-
- 
-
-Split IP
-
-117
-
-`u`
-
-Stack Under Stack/98
-
-n
-
-(en..e1)
-
- 
-
-118
-
-`v`
-
-Go South/2D
-
- 
-
- 
-
-delta \<- (0,1)
-
-119
-
-`w`
-
-Compare/98/2D
-
-a b
-
- 
-
-if (a\>b) ']' elsif (a\<b) '[' else 'z'
-
-120
-
-`x`
-
-Absolute Delta/98
-
-Va
-
- 
-
-delta \<- Va
-
-121
-
-`y`
-
-Get SysInfo/98
-
-c
-
-en(..e1)
-
- 
-
-122
-
-`z`
-
-No Operation/98
-
- 
-
- 
-
- 
-
-123
-
-`{`
-
-Begin Block/98
-
-en..e1 n
-
-(en..e1) 
-
-offset \<- pos + delta, etc
-
-124
-
-`|`
-
-North-South If/2D
-
-b
-
- 
-
-delta \<- if (b) (0,-1) else (0,1)
-
-125
-
-`}`
-
-End Block/98
-
-en..e1 n
-
-(en..e1) 
-
-offset \<- SOSS Va, etc
-
-126
-
-`~`
-
-Input Character
-
- 
-
-c
-
-c = readchar()
+    k     Iterate/98           n                   execute next instruction now, n times
+    l     Go Low/98/3D                             delta <- (0,0,1)
+    m     High-Low If/98/3D    b                   delta <- if (b) (0,0,-1) else (0,0,1)
+    n     Clear Stack/98       en..e1
+    o     Output File/98/f     Va Vb f STR         outputs file
+    p     Put                  v Va                store-funge-space(offset+Va,v)
+    q     Quit/98                                  immediate exit, returncode = r
+    r     Reflect/98                               delta <- delta * -1
+    s     Store Character/98   c                   store-funge-space(position+delta,v)
+    t     Split/98/c                               Split IP
+    u     Stack Under Stack/98 n         (en..e1)
+    v     Go South/2D                              delta <- (0,1)
+    w     Compare/98/2D        a b                 if (a>b) ']' elsif (a<b) '[' else 'z'
+    x     Absolute Delta/98    Va                  delta <- Va
+    y     Get SysInfo/98       c         en(..e1)
+    z     No Operation/98
+    {     Begin Block/98       en..e1 n  (en..e1)  offset <- pos + delta, etc
+    |     North-South If/2D    b                   delta <- if (b) (0,-1) else (0,1)
+    }     End Block/98         en..e1 n  (en..e1)  offset <- SOSS Va, etc
+    ~     Input Character                c         c = readchar()
 
 * * * * *
 
@@ -1504,6 +1281,8 @@ language for defining wrapping behaviour in a mathematical way.
 
 We can define an a *wrapping function* W() along the lines of:
 
+    W(x,y) = (x<0 -> x:=79, x>79 -> x:=0, y<0 -> y:=24, y>24 -> y:=0)
+
 for Befunge-93. Complex topologies can define their own wrapping
 functions. If these functions are strictly and clearly specified in the
 documentation of the Advanced Funge in question, it will save a lot of
@@ -1511,8 +1290,7 @@ confusion to users, and is highly recommended.
 
 * * * * *
 
-\
-Copyright ![(c)](/img/copyright.gif)2000 Chris Pressey, [Cat's Eye
-Technologies](http://www.catseye.mb.ca/). Permission is granted to
-republish this work on the condition that the above copyright message
-and this message remain included unchanged in all copies.
+Copyright (c)2000 Chris Pressey, Cat's Eye Technologies.  
+Permission is granted to republish this work on the condition that the
+above copyright message and this message remain included unchanged in
+all copies.
