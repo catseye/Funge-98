@@ -1123,292 +1123,39 @@ executed.  "After" column is the state of the TOSS after the instruction
 is executed.  Both are notated from bottom (on the left) to top (on the
 right).
 
-    ASCII Instruction       Before   After     Other Effects
-    ----- -----------       ------   -----     -------------
-    space Space                                not normally executed
-    !     Logical Not       b        NOT b
-    "     Toggle Stringmode                    stringmode <- NOT stringmode
-    #     Trampoline                           pos <- pos + delta
-    $     Pop               n
-    %     Remainder         a b      a REM b
+    ASCII Instruction          Before    After     Other Effects
+    ----- -----------          ------    -----     -------------
+    space Space                                    not normally executed
+    !     Logical Not          b         NOT b
+    "     Toggle Stringmode                        stringmode <- NOT stringmode
+    #     Trampoline                               pos <- pos + delta
+    $     Pop                  n
+    %     Remainder            a b       a REM b
+    &     Input Integer                  a         a = readint()
+    '     Fetch Character/98             c         pos <- pos + delta
+    (     Load Semantics/98    en..e1 n  f 1       overloads A-Z
+    )     Unload Semantics/98  en..e1 n            unloads last A-Z
+    *     Multiply             a b       a * b
+    +     Add                  a b       a + b
+    ,     Output Character     c                   writechar(c)
+    -     Subtract             a b       a - b
+    .     Output Integer       a                   writeint(a)
+    /     Divide               a b       a / b
+    0     Push Zero                      0
+    1     Push One                       1
+    2     Push Two                       2
+    3     Push Three                     3
+    4     Push Four                      4
+    5     Push Five                      5
+    6     Push Six                       6
+    7     Push Seven                     7
+    8     Push Eight                     8
+    9     Push Niner                     9
+    :     Duplicate            v         v v
+    ;     Jump Over/98                             nothing executed until next ;
+    <     Go West                                  delta <- (-1,0)
 
 * * * * *
-
-38
-
-`&`
-
-Input Integer
-
- 
-
-a
-
-a = readint()
-
-39
-
-`'`
-
-Fetch Character/98
-
- 
-
-c
-
-pos \<- pos + delta
-
-40
-
-`(`
-
-Load Semantics/98
-
-en..e1 n
-
-f 1
-
-overloads A-Z
-
-41
-
-`)`
-
-Unload Semantics/98
-
-en..e1 n
-
- 
-
-unloads last A-Z
-
-42
-
-`*`
-
-Multiply
-
-a b
-
-a \* b
-
- 
-
-43
-
-`+`
-
-Add
-
-a b
-
-a + b
-
- 
-
-44
-
-`,`
-
-Output Character
-
-c
-
- 
-
-writechar(c)
-
-45
-
-`-`
-
-Subtract
-
-a b
-
-a - b
-
- 
-
-46
-
-`.`
-
-Output Integer
-
-a
-
- 
-
-writeint(a)
-
-47
-
-`/`
-
-Divide
-
-a b
-
-a / b
-
- 
-
-48
-
-`0`
-
-Push Zero
-
- 
-
-0
-
- 
-
-49
-
-`1`
-
-Push One
-
- 
-
-1
-
- 
-
-50
-
-`2`
-
-Push Two
-
- 
-
-2
-
- 
-
-51
-
-`3`
-
-Push Three
-
- 
-
-3
-
- 
-
-52
-
-`4`
-
-Push Four
-
- 
-
-4
-
- 
-
-53
-
-`5`
-
-Push Five
-
- 
-
-5
-
- 
-
-54
-
-`6`
-
-Push Six
-
- 
-
-6
-
- 
-
-55
-
-`7`
-
-Push Seven
-
- 
-
-7
-
- 
-
-56
-
-`8`
-
-Push Eight
-
- 
-
-8
-
- 
-
-57
-
-`9`
-
-Push Niner
-
- 
-
-9
-
- 
-
-58
-
-`:`
-
-Duplicate
-
-v
-
-v v
-
- 
-
-59
-
-`;`
-
-Jump Over/98
-
- 
-
- 
-
-nothing executed until next semicolon
-
-60
-
-`<`
-
-Go West
-
- 
-
- 
-
-delta \<- (-1,0)
 
 61
 
