@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Funge-98 Documentation: REFC fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Referenced Cells Extension</h1>
+<h3>Fingerprint 0x52454643 ('REFC')</h3>
+</center>
+
+<p>Under development.
+
+<p>The REFC fingerprint allows vectors to be encoded into
+and decoded from single scalar cell values.
+
+<p>After successfully loading REFC, the instructions
+<tt>D</tt> and <tt>R</tt>
+take on new semantics.
+
+<p><tt>R</tt> 'Reference' pops a vector off the stack,
+and pushes a scalar value back onto the stack, unique
+within an internal list of references, which refers
+to that vector.
+
+<p><tt>D</tt> 'Dereference' pops a scalar value off the
+stack, and pushes the vector back onto the stack which
+corresponds to that unique reference value.
+
+<p>The internal list of references is considered
+shared among all IP's, so a global static can be used
+to store this list, so that this extension remains tame.
+
+</body>
+</html>

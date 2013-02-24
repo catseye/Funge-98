@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>Funge-98 Documentation: PERL fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Generic Interface to the Perl Language</h1>
+<h3>Fingerprint 0x5045524c ('PERL')</h3>
+</center>
+
+<p>Under development.
+
+<p>The PERL fingerprint is designed to provide a basic,
+no-frills interface to the Perl language.
+
+<p>After successfully loading PERL, the instructions
+<tt>E</tt>, <tt>I</tt>, and <tt>S</tt>
+take on new semantics.
+
+<p><tt>S</tt> ('Shelled')
+pushes a 0 on the stack if the Perl language
+is already loaded (e.g. the interpreter is written in Perl).
+It pushes a 1 on the stack otherwise, indicating that the
+Perl language will be shelled when needed.
+
+<p><tt>E</tt> ('Eval') pops a 0gnirts string and
+performs a Perl <code>eval()</code> on it, possibly (or
+not) shelling Perl as indicated by S above.
+The result of the call is pushed as a 0gnirts string
+back onto the stack.
+
+<P><tt>I</tt> ('Int Eval') acts the same as <tt>E</tt>, except that
+the result of the call is converted to an integer and
+pushed as a single cell onto the stack.
+
+</body>
+</html>

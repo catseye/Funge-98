@@ -1,0 +1,24 @@
+<html>
+<head>
+<title>Funge-98 Documentation: MODU fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Modulo Arithmetic Extension</h1>
+<h3>Fingerprint 0x4d4f4455 ('MODU')</h3>
+</center>
+
+<p>Under development.
+
+<p>The MODU fingerprint implements some of the finer,
+less-well-agreed-upon points of modulo arithmetic.  With
+positive arguments, these instructions work exactly the
+same as <tt>%</tt> does.  However, when negative values
+are involved, they all work differently:
+
+<p><tt>M</tt>: signed-result modulo:
+<ul>x MOD y = x - FLOOR(x / y) * y</ul>
+<p><tt>U</tt>: Sam Holden's unsigned-result modulo
+<p><tt>R</tt>: C-language integer remainder
+
+</body>
+</html>

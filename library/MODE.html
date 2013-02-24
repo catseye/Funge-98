@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>Funge-98 Documentation: MODE fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Funge-98 Standard Modes</h1>
+<h3>Fingerprint 0x4d4f4445 ('MODE')</h3>
+</center>
+
+Currently under development.<P>
+
+After successfully loading MODE, the instructions
+<tt>H</tt>, <tt>I</tt>, <tt>Q</tt>, and <tt>S</tt>
+take on new semantics, which alter four new states or
+'modes' of the current IP.<P>
+
+<tt>H</tt> toggles an internal flag called hovermode on and off.  In hovermode, the 
+instructions <tt>&gt;</tt>, <tt>&lt;</tt>, <tt>^</tt>,
+<tt>v</tt>, <tt>|</tt>, and <tt>_</tt> treat the IP's delta
+relatively - instead of setting the dx to 0 and dy to -1,
+<tt>^</tt> would instead simply subtract 1 from dy.<p>
+
+The <tt>I</tt> "Toggle Invertmode" instruction toggles an internal flag called
+<i>invertmode</i>.  When invertmode is active, cells are <b>pushed</b> on the
+stack onto the <b>bottom</b> instead of the top.<p>
+
+The <tt>Q</tt> "Toggle Queuemode" instruction toggles an internal flag called
+<i>queuemode</i>.  When queuemode is active, cells are <b>popped</b> off the
+stack from the <b>bottom</b> instead of the top.<p>
+
+<tt>S</tt> toggles switchmode on and off.  In switchmode, the pairs of
+instructions <tt>[</tt> and <tt>]</tt>, <tt>{</tt> and <tt>}</tt>,
+and <tt>(</tt> and <tt>)</tt> are treated as switches.  When one is
+executed, the cell it is located in is immediately overwritten with
+the other instruction of the pair, providing a switching mechanism
+and a way to seperate coincident IP's.<p>
+
+</body>
+</html>

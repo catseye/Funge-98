@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>Funge-98 Documentation: ROMA fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Funge-98 Roman Numerals</h1>
+<h3>Fingerprint 0x524f4d41 ('ROMA')</h3>
+</center>
+
+After successfully loading ROMA, the instructions
+<tt>C</tt>, <tt>D</tt>, <tt>I</tt>, <tt>L</tt>,
+<tt>M</tt>, <tt>V</tt>, and <tt>X</tt>
+take on new semantics.<P>
+
+<ul>
+<li><tt>C</tt> pushes 100 onto the stack.
+<li><tt>D</tt> pushes 500 onto the stack.
+<li><tt>I</tt> pushes 1 onto the stack.
+<li><tt>L</tt> pushes 50 onto the stack.
+<li><tt>M</tt> pushes 1000 onto the stack.
+<li><tt>V</tt> pushes 5 onto the stack.
+<li><tt>X</tt> pushes 10 onto the stack.
+</ul>
+
+Note that these are just digits, you still have
+to do the arithmetic yourself.
+Executing <tt>MCMLXXXIV</tt> will not leave
+1984 on the stack.  But executing
+<tt>MCM\-+LXXX+++IV\-++</tt> should.<p>
+
+</body>
+</html>

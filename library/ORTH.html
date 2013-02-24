@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>Funge-98 Documentation: ORTH fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Orthogonal Easement Library</h1>
+<h3>Fingerprint 0x4f525448 ('ORTH')</h3>
+</center>
+
+Under development.<p>
+
+The ORTH fingerprint is designed to ease transition
+between the Orthogonal programming language and
+Befunge-98 (or higher dimension Funges.)  Even if
+transition from Orthogonal is not an issue, the ORTH
+library contains some potentially interesting
+instructions not in standard Funge-98.<P>
+
+After successfully loading ORTH, the instructions
+<tt>A</tt>, <tt>E</tt>, <tt>G</tt>,
+<tt>O</tt>, <tt>P</tt>, <tt>S</tt>,
+<tt>V</tt>, <tt>W</tt>, <tt>X</tt>, <tt>Y</tt>, and <tt>Z</tt>
+take on new semantics.  The following table, which
+can be used to translate Orthogonal to Funge-98 and
+back, includes which Orthogonal instructions they
+emulate:<p>
+
+<pre>
+	Funge		Orthogonal	Semantic
+
+	+		+		add
+	*		*		multiply
+	-		-		subtract
+	/		/		divide
+	%		%		modulo (positive values only)
+>>>	A		&		bitwise AND
+>>>	O		|		bitwise OR
+>>>	E		^		bitwise EXOR
+	!		!		logical negate
+	\		~		swap
+	:		@		duplicate
+	$		$		pop
+	<		L		go west
+	>		H		go east
+	^		K		go north
+	v		J		go south
+	]		cw		rotate right
+	[		ccw		rotate left
+	r		rev		reverse
+>>>	X		x		change x
+>>>	Y		y		change y
+>>>	V		dx		change dx
+>>>	W		dy		change dy
+>>>	G		=		ortho get
+>>>	P		#		ortho put
+>>>	Z		?		ramp if zero
+	,		c		output character
+>>>	S		s		output string
+	.		d		output decimal
+	z		nop		no operation
+	q		ret		quit
+</pre>
+
+</body>
+</html>

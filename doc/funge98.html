@@ -1,0 +1,1349 @@
+<html>
+<head>
+<title>Funge-98 Final Specification</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Funge-98 Final Specification</h1>
+Chris Pressey, Sept 11, 1998<br>
+<font size=-2>revised for clarity: Sept 30 1998</font><br>
+</center>
+<hr><a name="toc"><h3>Table of Contents</h3>
+<ul>
+<p><li><h4><A HREF="#Introduction">Introduction</A></h4>
+    <ul>
+    <li><A HREF="#Whatis">What is a Funge?</A>
+    <li><A HREF="#About">About this Document</A>
+    </ul>
+<p><li><h4><A HREF="#Machine">The Funge Virtual Machine</A></h4>
+    <ul>
+    <li><A HREF="#Code_Data">Code and Data</A>
+    <li><A HREF="#Space">Funge-Space</A>
+    <li><A HREF="#Stack_Stack">Stack Stack</a>
+    <li><A HREF="#Format">Funge Source File Format</A>
+    </ul>
+<p><li><h4><A HREF="#Code">Code: Program Flow</A></h4>
+    <ul>
+    <li><A HREF="#IP">Instruction Pointer</A>
+    <li><A HREF="#Instructions">Instructions</A>
+    <li><A HREF="#Direction">Direction Changing</A>
+    <li><A HREF="#Wrapping">Wrapping</A>
+    <li><A HREF="#Flow">Flow Control</A>
+    <li><A HREF="#Decision">Decision Making</A>
+    </ul>
+<p><li><h4><A HREF="#Data">Data: Cell Crunching</A></h4>
+    <ul>
+    <li><A HREF="#Integers">Integers</A>
+    <li><A HREF="#Strings">Strings</A>
+    <li><A HREF="#Stack_Manipulation">Stack Manipulation</A>
+    <li><A HREF="#Stack_Stack_Manipulation">Stack Stack Manipulation</A>
+    </ul>
+<p><li><h4><A HREF="#Media">Media: Communications and Storage</A></h4>
+    <ul>
+    <li><A HREF="#Storage">Funge-Space Storage</A>
+    <li><A HREF="#Stdio">Standard Input/Output</A>
+    <li><A HREF="#Fileio">File Input/Output</A>
+    <li><A HREF="#System">System Execution</A>
+    <li><A HREF="#Sysinfo">System Information Retrieval</A>
+    </ul>
+<p><li><h4><A HREF="#Scale">Scale: Extension and Customization</A></h4>
+    <ul>
+    <li><A HREF="#Handprints">Handprints</A>
+    <li><A HREF="#Fingerprints">Fingerprints</A>
+    <li><A HREF="#Registry">Funge Central Registry</A>
+    </ul>
+<p><li><h4><A HREF="#Appendix">Appendix</A></h4>
+    <ul>
+    <li><A HREF="#Quickref">Instruction Quick Reference</A>
+    <li><A HREF="#Concurrent">Concurrent Funge-98</A>
+    <li><A HREF="#Lahey">Lahey-Space</A>
+    <li><A HREF="#Topologies">Other Topologies</A>
+    </ul>
+</ul>
+
+<hr><a name="Introduction"><h2>Introduction</h2>
+
+<a name="Whatis"><h3>What is a Funge?</h3>
+
+<p>Funges are programming languages whose programs are
+typically expressed in a given topological pattern and
+number of dimensions.
+
+<p>Funge-98 is currently an official prototype standard for Funges.
+Funge-98 has evolved from Funge-97, which was a generalization of
+Befunge-97, which was an improvement over Befunge-96, which was
+an update of the original Befunge-93 language definition.
+
+<p>Funge-98 is a <i>class</i> of three real and
+officially sanctioned programming languages
+(Unefunge, Befunge, and Trefunge) and provides a
+paradigm for describing any number of imaginary ones
+with different topologies and any number of dimensions.
+
+<p>The most popular Funge by far is Befunge, which
+is two-dimensional and based on a Cartesian Lahey-Space
+(or Cartesian Torus, in Befunge-93 only) topology.
+Other Cartesian Lahey-Space Funges include Unefunge (one-dimensional)
+and Trefunge (three-dimensional.)  Since not all Funge instructions
+are appropriate in all Funges, comparison to Befunge is often
+used to clarify points in this document.
+
+<hr><a name="About"><h3>About this Document</h3>
+
+<p>This is a final document.  The information it contains has been formally
+approved and it is endorsed by its supporters as the 'official'
+technical specification of the Funge language family.
+
+<p>This document is suitable for an
+audience not already familiar with any Funge of any kind or year.
+
+<hr><h2><a name="Machine">The Funge Virtual Machine</h2>
+
+<a name="Code_Data"><h3>Code and Data</h3>
+
+<p>Any given piece of code or data in a Funge 
+can be stored in one of two places (called a <i>cell</i>):
+
+<ul>
+<li><i>Funge-Space</i>, a matrix appropriate to the
+dimensionality, topology and tiling pattern of the Funge,
+where each <i>node</i> in its topological net contains a cell; or
+
+<li>the <i>stack</i> in Befunge-93
+or the <i>stack stack</i>
+in Funge-98; either way, it's often called <i>the stack</i>
+and it's accessed as a last-in, first-out (LIFO) stack of cells.
+</ul>
+
+<P>Befunge-93 defines signed 32-bit stack cells and unsigned
+8-bit Funge-Space cells.  In Funge-98, stack and Funge-Space cells
+alike should be treated as signed integers of the same size.
+
+<p>What size exactly is left up to the implementer.
+32 bits is typical.  16 bit and 8 bit versions are discussed as
+separate variations on Funge-98.
+More than 32 bits is just fine.  The important thing is that the
+stack cells have the same memory size as the Funge-Space cells.
+
+<hr><a name="Space"><h3>Funge-Space</h3>
+
+<p>In Befunge-93, Funge-Space is restricted to 80 cells in the
+<i>x</I> dimension and 25 cells in the <i>y</i> dimension.  No
+such limits are imposed on Funge-98 programs.  A Funge-98
+interpreter, ideally, has an addressing range equal to that
+of its cell size.  i.e. A 32-bit implementation of Funge-98
+uses signed 32-bit integers as each of its coordinate indices.
+
+<p>With such a large typical addressing range, the Funge-98-Space
+is generally considered to be dynamically allocated
+by some behind-the-scenes mechanism in the compiler.
+It <i>needn't</i> be, of course, but in practice, it usually is.
+
+<p>So, the storage mechanism has be consistently trustworthy about
+how it provides Funge-Space to the running program.
+A Funge-98 program should be able to rely on all code and data 
+that it puts in Funge-Space through this mechanism not disappearing.
+A Funge-98 program should also be able to rely on the memory mechanism
+acting as if a cell contains blank space (ASCII 32) if it is
+unallocated, and setting memory to be full of blank space cells upon
+actual allocation (program load, or <code>p</code> instruction).
+If the underlying memory mechanism cannot provide this (e.g. no more
+memory is available to be allocated,) the interpreter should complain
+with an error and do what it can to recover, (but not necessarily
+gracefully).
+
+<p>The co-ordinate mapping used for both Befunge-93 and Funge-98
+reflects the "Computer Storage" co-ordinate system used in screen
+graphics and spreadsheets; a larger <i>y</i> coordinate means
+further down the page.  Compared to a standard mathematical
+representation of the usual Cartesian co-ordinate system,
+it is upside-down.
+
+<p><table><tr><td><pre>
+      Befunge-93                32-bit Befunge-98
+      ==========                =================
+   0      <i>x</i>     79                      |-2,147,483,648
+  0+-------------+                      |
+   |                                    |    <i>x</i>
+   |                               -----+-----
+  <i>y</i>|                  -2,147,483,648    |    2,147,483,647
+   |                                    |
+   |                                   <i>y</i>|2,147,483,647
+ 24+
+</pre></td></tr></table>
+
+<hr><a name="Stack_Stack"><h3>Stack Stack</h3>
+
+<p>The Funge stack stack is a LIFO stack of typical LIFO stacks
+of cells.  In Befunge-93, only two operations
+are possible on only one stack (referred to as <i>the stack</i>):
+to <i>push</i> a cell onto the top of
+the stack, and to <i>pop</i> a cell off the top of the stack.
+
+<p>In the case of Funge-98, however, <i>the stack</i> refers
+to the topmost stack on the stack stack.  The push and pop operations
+are possible on the stack stack as well, but they push and pop entire
+stacks.
+
+<p>There is also a Funge-98 instruction to rid the stack
+(that is, the topmost stack of the stack stack) of cells,
+completely emptying it.
+
+<p>If a program attempts to pop a cell off the stack when it is empty, no
+error occurs; the program acts as if it popped a 0.
+
+<p>In this document, short stacks are generally notated
+left to right to mean <b>bottom to top</b>.  The <b>leftmost</b>
+values listed in the documentation are the
+<b>bottommost</b> and the <b>first</b> to be pushed onto the stack.
+Long stacks
+are notated top to bottom, to mean precisely that, <b>top to bottom.</b>.
+
+<hr><a name="Format"><h3>Funge Source File Format</h3>
+
+<p>A Befunge-93 source (program) file name, by common convention, ends in
+the extension <tt>.bf</tt>.  There is no enforced convention for
+what any given Funge-98 source file name ends in (e.g. you could
+easily write a C-Befunge polyglot whose file name ends in <tt>.c</tt>), but 
+<tt>.b98</tt> is a good choice for Befunge-98 sources
+- "standard" example programs use this suffix.
+
+<p>Befunge-93 source files are plain text files containing only printable
+ASCII characters and the end-of-line controls described below.
+
+<p>Funge-98 source files are made up of Funge characters.  The
+Funge-98 character set overlays the ASCII subset used by Befunge-93
+and may have characters greater than 127 present in it (and greater
+than 255 on systems where characters are stored in multiple bytes;
+but no greater than 2,147,483,647.)  The Funge character set is 'display-independent.'
+That is to say, character #417 may look like a squiggle on system
+Foo and a happy face on system Bar, but the meaning is always the
+same to Funge, 'character #417', regardless of what it looks like.
+
+<p>In other words, what Funge characters look like on a particular computer or
+OS depends entirely on that computer or OS.  However, when
+characters are not generally considered to be printable, they can
+have special meaning to Funge-98:
+
+<ul>
+<li>0..31    : "ASCII controls" (only 10 is currently defined to mean EOL)
+<li>32..126  : "ASCII printable characters" (all are input/output and fixed-width)
+<li>127      : "delete control" (undefined)
+<li>128..2bil: "extended printable characters" (machine and font specific)
+</ul>
+
+<p>In Befunge-93, each line ends with the current operating system's
+"end of line" character, which may be a line feed (10) (Linux),
+carriage return (13) (MacOS), or carriage return-line feed (13, 10)
+(MS-DOS).
+
+<p>In Funge-98, however, <i>any</i> of the following sequences
+should, ideally, be recognized by the interpreter as an end-of-line marker,
+no matter <i>what</i> operating system it's running on:
+<ul>
+<li>Line Feed (10)
+<li>Carriage Return (13)
+<li>Carriage Return, Line Feed (13, 10)
+</ul>
+
+<p>If an interpreter cannot support all three varieties of end-of-line marker,
+it should be clearly noted in that interpreter's documentation.
+
+<p>End-of-line markers do <b>not</b> appear in Funge-Space once the
+program is loaded.
+
+<p>In Befunge-93, each line can contain up to 80 significant characters
+before the "End of Line" marker.  There can be up to 25 such lines in
+the source file. There are no such restrictions on Befunge-98 and the
+user can reasonably expect to be able to have as many lines of as many
+characters as they want, for non-contrived cases.
+
+<p>Before load, every cell in Funge-Space contains a space (32) character.
+These default contents are written over by characters in the program
+source when it is loaded.  However, spaces in the program source
+do not overwrite anything in Funge-Space; in essence the space
+character is transparent in source files.  This becomes important when
+the <code>i</code> "Input File" instruction is used to include overlapping files.
+
+<p>The source file begins at
+the <i>origin</i> of Funge-Space.  Subsequent columns of characters
+increment the <i>x</i> coordinate, and subsequent lines increment
+the <i>y</i> coordinate (if one is present) and reset the <i>x</i>
+coordinate to zero.  Subsequent lines in Unefunge are simply appended
+to the first, and the end of the source file indicates the end
+of the (single) line.  End-of-line markers are never copied
+into Funge-Space.
+
+<p>In Trefunge-98, the Form Feed (12) character increments the <i>z</i>
+coordinate and resets the <i>x</i> and <i>y</i> coordinates to zero.
+
+<hr><h2><a name="Code">Code: Program Flow</h2>
+
+<a name="IP"><h3>Instruction Pointer</h3>
+
+<p>The <i>instruction pointer</i> (IP) can be thought of as a <i>vector</i>
+(set of co-ordinates) which represents the "current position" of a running Funge program.  It
+holds the same function as the instruction pointer (or <i>program
+counter</i> (PC)) in any other language or processor - to indicate
+where the currently executing instruction is located.
+
+<p>In most other languages and machines (both virtual and real,)
+the IP/PC is restricted to unidirectional travel in a single
+dimension, with random jumps.  However, in Funge, the IP keeps
+track of another vector called the <i>delta</i>.  Every <i>tick</i>,
+the IP executes its current instruction (that is, the instruction
+at the location pointed to by the IP), then travels to a new location, by
+adding its delta vector to its position vector.
+
+<p>At the beginning of a program, in Funge-98 as in Befunge-93,
+the IP always begins at the origin and
+starts with a delta of (1, 0).  The origin is
+(0, 0) in Befunge, (0) in Unefunge, and (0, 0, 0) in Trefunge.
+
+<p>In two dimensions, we have the following terminology.
+
+<p>If the IP's delta is either (0,-1) (<i>south</i>), (1,0)
+(<i>east</i>), (0,1) (<i>north</i>), or (-1,0) (<i>west</i>),
+it is said to be traveling <i>cardinally</i>.  This is the
+same as how a rook moves in chess and this
+is in fact the only way the IP can move in Befunge-93.
+
+<p>Any IP with a nonzero delta is considered <i>moving</i>.
+Any IP with a zero delta is said to be <i>stopped</i>.
+Any moving IP that is not traveling cardinally is said
+to be <i>flying</i>.
+
+<hr><a name="Instructions"><h3>Instructions</h3>
+
+<p>All standard instructions are one character long and range from
+ASCII 32 (space) to ASCII 126 (<code>~</code>).  There are no
+multicharacter instructions in Funge.
+
+<p>An instruction is executed by an IP every tick.  The IP
+executed is the one at the current position of the IP.
+Only after that does the IP moves by its delta to a new position.
+
+<p>Instructions <code>A</code> to <code>Z</code> all initially act like the
+<code>r</code> "Reflect" instruction.  However, other instructions
+assign semantics to these instructions dynamically, allowing
+the Funge programmer to use libraries of both standard and proprietary
+instruction sets tagged with unique ID's (or <i>fingerprints</i>.)
+
+<p>However, a Funge-98 interpreter may also expose any number of
+proprietary instructions above ASCII 127 or below ASCII 0.
+
+<p>For all these reasons, when encountering any unimplemented
+instruction (this includes instructions like <code>|</code> in
+Unefunge,) the Funge interpreter should at least provide an option
+for informing the user that it was told to execute an instruction
+that isn't implemented, and possibly 
+warning the user that this file might be an incorrect language or
+version.
+
+<p>An unimplemented instruction must otherwise act as
+if <code>r</code> was executed, and must not touch the stack.
+All undefined or otherwise unimplemented
+instructions must be considered unimplemented.
+
+<p>Also, any of the instructions <code>t</code>
+(concurrent execution,) <code>=</code> (execute,)
+<code>i</code> (input-file,)
+and <code>o</code> (output-file)
+may be unavailable in different interpreters for many reasons, and
+are routinely bound to (i.e. act just like) <code>r</code> as well.
+However, they may also act like <code>r</code> when they fail to execute.
+To test if they are actually supported, execute <code>1y</code> and examine
+the cell it produces.
+
+<hr><a name="Direction"><h3>Direction Changing</h3>
+
+<p>A few instructions are essential for changing the delta of the IP.
+The <code>&gt;</code> "Go East" instruction causes the IP to travel
+east; the <code>&lt;</code> "Go West" instruction causes the IP to
+travel west.  These instructions are valid in all Funges.
+
+<p>The <code>^</code> "Go North" instruction causes the IP to travel north;
+the <code>v</code> "Go South" instruction causes the IP to travel south.
+These instructions are not available in Unefunge.
+
+<p>The <code>h</code> "Go High" instruction causes the IP to travel up (delta &lt;- (0,0,1));
+the <code>l</code> "Go Low" instruction causes the IP to travel
+down (delta &lt;- (0,0,-1)).  These instructions are not available
+in Unefunge or Befunge.
+
+<p>The <code>?</code> "Go Away" instruction causes the IP to travel in
+a random cardinal direction appropriate to the number of
+dimensions in use: east or west in Unefunge; north, south,
+east or west in Befunge, etc.
+
+<p>The following instructions are not in Befunge-93, but they are in
+Funge-98.
+
+<p>The <code>]</code> "Turn Right" and <code>[</code> "Turn Left"
+instructions rotate by 90 degrees the delta of the IP which
+encounters them.  They always rotate on the <i>z</i> axis.
+These instructions are not available in Unefunge.
+
+<p>To remember which is which, visualize
+yourself on the seat of a bicycle, looking down at the handlebars:
+
+<center><table border=1><tr>
+<td align=center><code>+-<br>|&nbsp;<br>+-</code></td>
+<td align=center><code>+-+<br>|&nbsp;|</code></td>
+<td align=center><code>-+<br>&nbsp;|<br>-+</code></td>
+</tr><tr>
+<td align=center><code>[</code></td>
+<td align=center><code>&nbsp;</code></td>
+<td align=center><code>]</code></td>
+</tr><tr>
+<td align=center><code>Turn Left</code></td>
+<td align=center><code>Go Forward</code></td>
+<td align=center><code>Turn Right</code></td>
+</tr></table></center>
+
+<p>The <code>r</code> "Reverse" instruction multiplies
+the IP's delta by -1.  In two dimensions, this is
+the equivalent of reflecting the delta of
+the IP about the z-axis.
+
+<p>The <code>x</code> "Absolute Vector" instruction pops a vector off
+the stack, and sets the IP delta to that vector.
+
+<p>A vector on the stack is stored bottom-to-top, so that in
+Befunge, <code>x</code> (and all other vector-popping instructions)
+pops a value it calls <i>dy</i>, then pops a
+value it calls <i>dx</i>, then sets the delta to (<i>dx</i>, <i>dy</i>).
+
+<hr><a name="Wrapping"><h3>Wrapping</h3>
+
+<p>Befunge-93 handles the case of the IP travelling
+out of bounds (off the map of Funge-Space) by treating the space
+as a torus. If the IP leaves the west edge, it reappears on the
+east edge at the same row; if it leaves the south edge, it
+reappears at the north edge at the same column, and vice
+versa in both cases.
+
+<p>For various reasons, toroidal wrapping is problematic
+in Funge-98.  Instead, we use a special wrapping technique that
+has more consistent results in this new, more flexible
+environment where Funge-Space can have an arbitrary size
+and the IP can fly.  It is called <i>same-line wrapping</i>.
+
+<p>Same-line wrapping can be described in several ways,
+but the crucial idea it encompasses is this: unless the delta
+or position of the IP were to be changed by an intervening instruction,
+the IP will always wrap such that it would eventually
+return to the instruction it was on before it wrapped.
+
+<p>The mathematical description of same-line wrapping is
+known as <i>Lahey-space</i> wrapping, which defines a special
+topological space.  It is generally of more interest to
+topologists and mathematicians than programmers.  We won't
+cover it here, but it is included in the
+<a href="#Lahey">Appendix</a> for completeness.
+
+<p>The algorithmic description of same-line wrapping can
+be described as <i>backtrack wrapping</i>.  It is more of
+interest to Funge interpreter implementers than Funge
+programmers.  However, it does describe exactly how the
+wrapping <i>acts</i> in terms that a programmer can
+understand, so we will include it here.
+
+<p>When the IP attempts to travel into the whitespace
+between the code and the end of known, addressable space, it backtracks.
+This means that its delta is reversed and it ignores
+(skips over without executing) all instructions.  Travelling thus, it finds the other 'edge' of
+code when there is again nothing but whitespace in front of it.  It
+is reflected 180 degrees once more (to restore its original delta)
+and stops ignoring instructions.  Execution then resumes normally
+- the wrap is complete.
+
+<p><center><img src="wrap.jpg" alt="(wrap.jpg - Wrapping pictorial diagram)"></center>
+
+<p>It is easy to see at this point that the IP remains on the same
+line: thus the name.  (Also note that this <b>never</b> takes any
+ticks in regards to multithreading, as would be expected from any
+wrapping process.)
+
+<p>Same-line wrapping has the advantage of being
+backward-compatible with Befunge-93's toroidal wrapping.  It also works
+safely both when the IP delta is flying (non-cardinal), and when the
+size of the program changes.
+
+<p>As noted, by default every cell in Funge-Space contains a space (32)
+character.  (This holds true with most decent Befunge-93 interpreters,
+too, although it was not in the original.)
+
+<p>In Befunge-93, when interpreted as an instruction, a space is treated
+as a "no operation" or <i>nop</i>.  The interpreter does nothing and
+continues on its merry way.
+
+<p>Funge-98 acts much the same way, except
+technically, Funge-98 processes any number of spaces in "no time
+whatsoever", and this becomes important when you have more than one
+IP in Funge-Space at the same time (<i>multithreading</i>), which
+you'll read about later.  For an explicit nop instruction in
+Funge-98, use <code>z</code>.
+
+<p>Space also takes on special properties (in Funge-98) with a special
+<i>mode</i> of the interpreter called stringmode, which you'll also
+read about later.
+
+<hr><a name="Flow"><h3>Flow Control</h3>
+
+<p>The <code>#</code> "Trampoline" instruction moves the IP one position beyond
+the next Funge-Space cell in its path.
+
+<p>The <code>@</code> "Stop" instruction kills the current IP.
+In non-Concurrent Funge, there is only a single IP.
+Either way, when no IP's are left alive,
+the program will subsequently end with no error (returning error code 0).
+
+<p>The following instructions and markers are not in Befunge-93, but they are
+in Funge-98.
+
+<p>The <code>;</code> "Jump Over" marker causes the IP to
+jump over all subsequent
+instructions until the next <code>;</code> marker.  Like space, this
+takes zero ticks to execute, so that subroutines, comments,
+and satellite code can be insulated by surrounding it with
+<code>;</code> markers, with no effect on multithreading.
+
+<p><code>;</code> is truly ethereal; like space, it cannot ever
+be truly executed, in the sense of it taking up a tick and
+doing something.
+
+<p>The <code>j</code> "Jump Forward" instruction pops a
+value off the stack, and jumps over that many spaces.
+If there is a 1 on the stack, <code>j</code> will work like <code>#</code> does.
+e.g. <code>2j789.</code> would print 9 and leave an empty stack.
+Negative values are legal arguments for <code>j</code>, such
+that <code>04-j@</code> is an infinite loop.
+
+<p>The <code>q</code> "Quit" instruction, only in Funge-98,
+ends the entire program immediately
+(regardless of the number of IPs active in Concurrent Funge).
+It also pops a cell off the stack and uses that value as
+the return value of the Funge interpreter to the
+operating system.
+
+<p>Note that most operating systems will only look at
+the least significant byte your return value, unsigned.
+But you can return a full cell, and the OS will interpret
+as much of it as it can handle, treating it as
+signed or unsigned as the OS demands.
+
+<p>The <code>k</code> "Iterate" instruction pops a value <i>n</i>
+off the stack.  Then it finds the next instruction
+in Funge-space in the path of the IP (note that this cannot
+be a marker such as space or <code>;</code>), treats it as an instruction,
+executing it <i>n</i> times.  This takes only one tick with
+respect to concurrent operation.
+
+<p>Note that some instructions don't make much sense within
+the context of <code>k</code> unless you include zero as one
+of the possibilities for how many times the instruction
+is repeated.  For example, no matter how
+many times after the first time <code>k</code> execute <code>^</code>,
+the result is the same.
+However, you may pass a zero count to <code>k</code>, and
+the <code>^</code> instruction will not be executed; this can be a valuable
+behaviour.
+
+<p>Also, note <code>k</code> will never, ever actually execute
+instruction #32, space, or <code>;</code>.
+
+<hr><a name="Decision"><h3>Decision Making</h3>
+
+<p>The <code>!</code> "Logical Not" instruction pops a value off
+the stack and pushes a value which is the logical negation of it.
+If the value is zero, it pushes one; if it is non-zero, it pushes
+zero.
+
+<p>The <code>`</code> "Greater Than" instruction pops two cells off the
+stack, then pushes a one if second cell is greater than the
+first.  Otherwise pushes a zero.
+
+<p>Funge has instructions that act like directional 'if' statements.
+The <code>_</code> "East-West If" instruction pops a value off the
+stack; if it is zero it acts like <code>&gt;</code>, and if non-zero
+it acts like <code>&lt;</code>.
+
+<p>The <code>|</code> "North-South If" instruction pops a value off the stack; if it is
+zero it acts like <code>v</code>, and if non-zero it acts like <code>^</code>.  <code>|</code>
+is not available in Unefunge.
+
+<p>The <code>m</code> "High-Low If" (think <i>middle</i>)
+instruction pops a value off the
+stack; if it is zero it acts like <code>l</code>, and if non-zero it
+acts like <code>h</code>.  <code>m</code> is not available in Unefunge
+or Befunge.
+
+<p>The <code>w</code> "Compare" instruction pops a value <i>b</i>
+off the stack, then pops a value <i>a</i>,
+then compares them.  (<i>a</i> is called <i>a</i> because it was
+the first of the two values to be <i>pushed</i> onto the stack.)
+If the <i>a</i> is smaller, <code>w</code> acts like <code>[</code>, and
+turns left.  If the <i>a</i> is greater, <code>w</code> acts like
+<code>]</code>, and turns right.
+If <i>a</i> and <i>b</i> are equal, <code>w</code> does not affect the IP's
+delta.  This instruction is not available in Befunge-93, nor
+Unefunge.
+
+<hr><h2><a name="Data">Data: Cell Crunching</h2>
+
+<a name="Integers"><h3>Integers</h3>
+
+<p>Instructions <code>0</code> "Push Zero" through <code>9</code> "Push Niner"
+push the values zero
+through nine onto the stack, respectively.
+In Funge-98, <code>a</code> through <code>f</code> also push 10
+through 15 respectively.
+
+<p>The <code>+</code> "Add" instruction pops two cells from the stack, adds
+them using integer addition,
+and pushes the result back onto the stack.
+
+<p>The <code>*</code> "Multiply" instruction pops two cells
+from the stack, multiplies them using integer multiplication,
+and pushes the result back onto the stack.  In this way numbers
+larger than 9 (or 15) can be pushed onto the stack.
+
+<p>For example, to push the value 123 onto the stack, one might write
+<pre>
+  99*76*+</pre>
+
+or
+
+<pre>
+  555**2-</pre>
+
+<p>Funge also offers the following arithmetic instructions:
+<ul>
+<li>the <code>-</code> "Subtract" instruction, which pops two values, subtracts the
+first from the second using integer subtraction, and pushes the result;
+<li>the <code>/</code> "Divide" instruction, which pops
+two values, divides the second by the first using integer division,
+and pushes the result (note that division by zero produces
+a result of zero in Funge-98, but Befunge-93 instead is
+supposed to <i>ask</i> the user what they want the result of
+the division to be); and
+<li> the <code>%</code> "Remainder" instruction,
+which pops two values, divides the
+second by the first using integer division,
+and pushes the remainder, of those.
+Remainder by zero is subject to the same rules as division by zero,
+but if either argument is negative, the result is implementation-defined.
+</ul>
+
+<hr><a name="Strings"><h3>Strings</h3>
+
+<p>The instruction <code>"</code> "Toggle Stringmode"
+toggles a special mode of the Funge
+interpreter called <i>stringmode</i>.  In stringmode, every cell 
+encountered by the IP (except <code>"</code> and in Funge-98, space)
+is not interpreted as an instruction, but rather as a Funge
+character, and is pushed onto the stack.  A subsequent <code>"</code>
+toggles stringmode once more, turning it off.
+
+<p>In Funge-98 stringmode, spaces are treated "SGML-style";
+that is, when any contiguous series of spaces is processed,
+it only takes one tick and pushes one space onto the stack.  This
+introduces a small backward-incompatibility with
+Befunge-93; programs that have multiple spaces and/or wrap while
+in stringmode will have to be changed to work the same under
+Funge-98.
+
+<pre>
+Befunge-93		Befunge-98
+
+"hello world"           "hello world"
+"hello   world"         "hello "::"world"</pre>
+
+<p>There is also a <code>'</code> "Fetch Character"
+instruction in Funge-98.  This pushes the Funge character value
+of the next encountered cell (position + delta) onto the stack,
+then adds the delta to the position (like <code>#</code>), skipping
+over the character (in no ticks).  For example, the
+following two snippets perform the same function, printing a Q:
+
+<p><code>"Q",</code>
+
+<p><code>'Q,</code>
+
+<p><code>s</code> "Store Character" is the mirror image of the
+<code>'</code> instruction: this instead pops a value off
+the stack and writes it into (position + delta).
+
+<p>Some instructions expect a Funge string on the stack as one of
+their arguments. The standard format for these strings is called
+<i>0"gnirts"</i> - that is, a null-terminated string with the
+start of the string at the top of the stack and the null
+termination at the bottom.
+
+<hr><a name="Stack_Manipulation"><h3>Stack Manipulation</h3>
+
+<p>The <code>$</code> "Pop" instruction pops a cell off the stack and
+discards it.
+
+<p>The <code>:</code> "Duplicate" instruction pops a cell off the stack, then pushes it
+back onto the stack twice, duplicating it.
+
+<p>The <code>\</code> "Swap" instruction pops two cells off the stack, then pushes
+the first cell back on, then the second cell, in effect swapping the
+top two cells on the stack.
+
+<p>The <code>n</code> "Clear Stack" instruction (not available in Befunge-93)
+completely wipes the stack (popping and discarding elements
+until it is empty.)
+
+<hr><a name="Stack_Stack_Manipulation"><h3>Stack Stack Manipulation</h3>
+
+<p>The stack stack transparently overlays
+the stack - that is to say, the top stack of
+Funge-98's stack stack is treated the same as
+Befunge-93's sole stack.  The Funge programmer
+will never notice the difference unless they
+use the <code>{</code>, <code>}</code>, or <code>u</code>
+instructions of Funge-98.
+
+<p>When working with different stacks on the stack
+stack, though, it's useful to give two of them
+names: the <i>top of stack stack</i> or TOSS,
+which indicates the topmost stack on
+the stack stack, which works to emulate the
+sole stack of Befunge-93;
+and the <i>second on stack stack</i> or
+SOSS, which is the stack directly under
+the TOSS.
+
+<p>The <code>{</code> "Begin Block" instruction pops a cell 
+it calls <i>n</i>, then pushes a new stack on the
+top of the stack stack, 
+transfers <i>n</i>
+elements from the SOSS to the TOSS,
+then pushes the storage offset
+as a vector onto the SOSS,
+then sets the new storage offset to the location to be
+executed next by the IP (storage offset &lt;- position + delta).
+It copies these elements as a block, so order is preserved.
+
+<p>If the SOSS contains <i>k</i> elements, where <i>k</i> is less than <i>n</i>, the
+<i>k</i> elements are transferred as the top <i>k</i> elements and the remaining
+bottom (<i>n-k</i>) elements are filled in with zero-value cells.
+
+<p>If <i>n</i> is zero, no elements are transferred.
+
+<p>If <i>n</i> is negative, |<i>n</i>| zeroes are pushed onto the SOSS.
+
+<p>The corresponding <code>}</code> "End Block" instruction pops a cell off
+the stack that it calls <i>n</i>, then pops a vector off the SOSS which
+it assigns to the storage offset, then transfers <i>n</i> elements (as a block)
+from the TOSS to the SOSS, then pops the top stack off the stack stack.
+
+<p>The transfer of elements for <code>}</code> "End Block" is in all respects
+similar to the transfer of elements for <code>{</code> "Begin Block", except
+for the direction in which elements are transferred.  "Transfer" is used
+here in the sense of "move," not "copy": the original cells are removed.
+
+<p>If <i>n</i> is zero, no elements are transferred.
+
+<p>If <i>n</i> is negative, |<i>n</i>| cells are popped off of the (original) SOSS.
+
+<p><code>{</code> makes the current TOSS the new SOSS.
+<code>}</code> makes the current SOSS the new TOSS.
+
+<p><code>{</code> may act like <code>r</code> if no more memory is available for another stack.
+<code>}</code> acts like <code>r</code> if a stack-stack underflow would otherwise occur (i.e. when there is only one stack on the stack-stack.)
+
+<p>The practical use of these instructions is to "insulate"
+and "localize" procedures or other blocks of Funge code.
+
+<p>The <code>u</code> "Stack under Stack" instruction pops a
+<i>count</i> and transfers that many
+cells from the SOSS to the TOSS.
+It transfers these cells in a pop-push loop.
+In other words, the order is not preserved during transfer,
+it is reversed.
+
+<p>If there is no SOSS (the TOSS is the only stack), <code>u</code> 
+should act like <code>r</code>.
+
+<p>If <i>count</i> is negative, |<i>count</i>| cells are
+transferred (similarly in a pop-push loop) from the TOSS to the
+SOSS.
+
+<p>If <i>count</i> is zero, nothing happens.
+
+<hr><h2><a name="Media">Media: Communications and Storage</h2>
+
+<a name="Storage"><h3>Funge-Space Storage</h3>
+
+<p>The <code>g</code> "Get" and <code>p</code> "Put" instructions are used to
+store and retrieve data and code in Funge-Space.
+
+<p>In Befunge-93, <code>g</code> pops a vector (that is, it pops a y value,
+then an x value,) and pushes the value (character)
+in the Befunge-Space cell
+at (x, y) onto the stack.
+<code>p</code> pops a vector, then it pops a value, then it
+places that value in the Funge-Space cell at (x, y).
+
+<p>In Funge-98, each IP has an additional vector property called the
+<i>storage offset</i>.  Initially this vector is the set to the
+origin.  As such, it works to emulate Befunge-93.  The arguments
+to <code>g</code> and <code>p</code> are the same, but instead of pointing
+to absolute locations in Funge-Space, they reference a cell relative
+to the storage offset.
+
+<hr><a name="Stdio"><h3>Standard Input/Output</h3>
+
+<p>The <code>.</code> "Output Decimal"
+and <code>,</code> "Output Character"
+instructions provide numeric and Funge
+character/control output, respectively; they pop a cell off the stack
+and send it in numeric or Funge character format to the <i>standard
+output</i>, which is usually displayed by the interpreter in an
+interactive user terminal.
+
+<p>Outputting character number 10 will result in a new line being
+displayed on the standard output.
+
+<p>Numeric output is formatted as a decimal integer followed by a space.
+
+<p>These instructions will act as <code>r</code> does, should the standard
+output fail for any reason.
+
+<p>The <code>&</code> "Input Decimal"
+and <code>~</code> "Input Character"
+instructions provide numeric and Funge
+character/control input, respectively.  They each suspend the
+program and wait for the user to enter a value in numeric or Funge
+character format to the <i>standard input</i>, which is usually
+displayed with the standard output.  They then push this value
+on the stack.
+
+<p>An input of character number 10 indicates that the user pressed
+the 'Enter' key, or the equivalent key on their keyboard.
+
+<p>Decimal input reads and discards characters until it encounters
+decimal digit characters, at which point it reads a decimal
+number from those digits, up until (but not including)
+the point at which input characters stop being digits,
+or the point where the next digit would cause a cell overflow,
+whichever comes first.
+
+<p>Although the standard input and output are generally displayed
+in some sort of interactive user terminal, they needn't be;
+many operating systems support <i>redirection</i>.  In the
+case of an end-of-file or other file error condition, the <code>&</code>
+and <code>~</code> both act like <code>r</code>.
+
+<hr><a name="Fileio"><h3>File Input/Output</h3>
+
+<p>File I/O is done with the <code>i</code> "Input File"
+and <code>o</code> "Output File" instructions, which
+are only available in Funge-98.
+
+<p><code>i</code> pops a null-terminated 0"gnirts" string for the filename,
+followed by a flags cell, then a
+vector Va telling it where to operate.  If the file can be opened
+for reading, it is inserted into Funge-Space at Va, and immediately closed.
+Two vectors are then pushed onto the stack, Va and Vb, suitable arguments to
+a corresponding <code>o</code> instruction.
+If the file open failed, the instruction acts like <code>r</code>.
+
+<p><code>i</code> is in all respects similar to the procedure used
+to load the main Funge source code file, except it may specify
+any file, not necessarily Funge source code,
+and at any location, not necessarily the origin.
+
+<p>Also, if the least significant bit of the flags cell is high,
+<code>i</code> treats the file as a binary file; that is, EOL and FF
+sequences are stored in Funge-space instead of causing the
+dimension counters to be reset and incremented.
+
+<p><code>o</code> first pops a
+null-terminated 0"gnirts" string to use for a filename.
+Then it pops a flags cell.
+It then pops a vector Va indicating a <i>least point</i>
+(point with the smallest numerical coordinates of a region;
+also known as the upper-left corner, when used in the context
+of Befunge) in space, and another vector Vb
+describing the size of a rectangle (or a rectangular prism in
+Trefunge, etc).
+If the file named by the filename can be opened
+for writing, the contents of the rectangle of Funge-Space
+from Va to Va+Vb are written into it, and it is immediately closed.
+If not, the instruction acts like <code>r</code>.
+
+<p>The first vectors popped by both of these instructions
+are considered relative to the storage offset.
+(The size vector Vb, of course, is relative to the least point Va.)
+
+<p>Note that in a greater-than-two-dimensional environment,
+specifying a more-than-two-dimensional size such as (3,3,3)
+is not guaranteed to produce sensical results.
+
+<p>Also, if the least significant bit of the flags cell is high,
+<code>o</code> treats the file as a linear text file; that is, any spaces
+before each EOL, and any EOLs before the EOF, are not written
+out.  The resulting text file is identical in appearance and takes
+up less storage space.
+
+<hr><a name="System"><h3>System Execution</h3>
+
+<p>The <code>=</code> "Execute" instruction
+pops a string off the stack, and attempts to execute it.
+How it executes it is implementation dependant.
+However, an implementation may support one of several
+standardized ways of interpreting the string,
+and which routine it uses can be determined by querying <code>y</code>.
+Typically methods include treating it as a
+C system() call would, or on a platform such as MacOS,
+for example, treating the string as AppleScript would be in order.
+
+<p>After execution, a failure value is pushed onto the stack.
+If this value is zero, everything went as expected.  If the
+value is non-zero, it may be the return-code of the program
+that was executed; at any rate it means that the attempt to
+execute the program, or the program itself, did not succeed.
+
+<hr><a name="Sysinfo"><h3>System Information Retrieval</h3>
+
+<p>The <code>y</code> "Get SysInfo" instruction, only available in Funge-98,
+pops one value off the stack.  If the value is zero
+or negative, <code>y</code> tells you far more than you
+ever really want to know about the underlying Funge
+interpreter, operating system, and computer
+(and is thus usually followed soon after
+by a <code>n</code> instruction).
+
+<p>Each cell of information retrieved by <code>y</code>, only applies to
+either the current IP, the current environment (that is,
+the interpreter of the current IP,) or the global environment
+(the environment of every IP in the same Funge-space, regardless
+of which interpreter it's running on.)
+
+<p>After an execution of <code>y</code> with a non-positive argument,
+the stack contains many more cells (listed from top to bottom:)
+
+<ol>
+<li>1 cell containing flags (env).
+<ul>
+<li>Least Significant Bit 0 (0x01): high if <code>t</code> is implemented.  (is this Concurrent Funge-98?)
+<li>Bit 1 (0x02): high if <code>i</code> is implemented.
+<li>Bit 2 (0x04): high if <code>o</code> is implemented.
+<li>Bit 3 (0x08): high if <code>=</code> is implemented.
+<li>Most Significant Bit 4 (0x10): high if unbuffered standard I/O
+(like <code>getch()</code>) is in effect, low if the usual
+buffered variety (like <code>scanf("%c")</code>) is being used.
+<li>Further more significant bits: undefined, should all be low in Funge-98
+</ul>
+<li>1 cell containing the number of bytes per cell (global env).
+<ul>aka cell size.  Typically 4, could also be 2, 8, really really large, infinity, etc.
+</ul>
+<li>1 cell containing the implementation's handprint (env).
+<li>1 cell containing the implementation's version number (env).
+<ul>If the version number contains points,
+they're stripped.  v2.01 == 201, v1.03.05 = 10305, v1.5g = 1507.
+Don't use non-numbers in the version number to indicate 'personalizations' - change the handprint instead.</ul>
+<li>1 cell containing an ID code for the Operating Paradigm (global env)
+<ul>
+<li>0 = Unavailable
+<li>1 = Equivalent to C-language system() call behaviour
+<li>2 = Equivalent to interpretation by a specific shell or program
+<ul>This shell or program is specified by the interpreter but should ideally be customizable
+by the interpreter-user, if applicable.  Befunge programs that run under this
+paradigm should document what program they expect to interpret the string
+passed to <code>=</code>.</ul>
+<li>3 = Equivalent to interpretation by the same shell as started this Funge interpreter, if applicable
+<ul>If the interpreter supports this paradigm, then in this manner, the user executing a
+Befunge source can easily choose which shell to use for <code>=</code> instructions.</ul>
+</ul>
+This value is included so the program can have a reasonable idea of what <code>=</code> will do.
+The values shown here are only the most basic set available at the time of publication.
+See the <a href="#Registry">Registry</a> for any late-breaking headway into further Operating Paradigms.
+<li>1 cell containing a path seperator character (global env)
+<ul>
+This is what path seperators for <code>i</code> and <code>o</code> filenames should look like.
+</ul>
+<li>1 cell containing the number of scalars per vector (global env)
+<ul>aka number of dimensions.  2 for Befunge, 1 for Unefunge, 3 for Trefunge.</ul>
+<li>1 cell containing a unique ID for the current IP (ip)
+<ul>Only significant for Concurrent Funge.
+This ID differentiates this IP from all others currently in the IP list.</ul>
+<li>1 cell containing a unique team number for the current IP (ip)
+<ul>Only significant for NetFunge, BeGlad, and the like.</ul>
+<li>1 vector containing the Funge-Space position of the current IP (ip)
+<li>1 vector containing the Funge-Space delta of the current IP (ip)
+<li>1 vector containing the Funge-Space storage offset of the current IP (ip)
+<li>1 vector containing the least point which contains a non-space cell, relative to the origin (env)
+<li>1 vector containing the greatest point which contains a non-space cell, relative to the least point (env)
+<ul>These two vectors are useful to give to the o instruction to output the entire program source as a text file.</ul>
+<li>1 cell containing current ((year - 1900) * 256 * 256) + (month * 256) + (day of month) (env)
+<li>1 cell containing current (hour * 256 * 256) + (minute * 256) + (second) (env)
+<li>1 cell containing the total number of stacks currently in use by the IP (size of stack stack) (ip)
+<li><i>size-of-stack-stack</i> cells containing size of each stack, listed from TOSS to BOSS (ip)
+<ul>Stack sizes are pushed as if they were measured <b>before</b> <code>y</code> began pushing elements onto the stack.</ul>
+<li>a series of sequences of characters (strings), each terminated by a null, the series terminated by an additional double null, containing the command-line arguments. (env)
+<ul>This means any isolated argument can be a null string, but no two consecutive arguments
+may be null strings - a rather contrived scenario, null string arguments being rare in themselves.</ul>
+<ul>The first string is the name of the Funge source program being run.</ul>
+<li>a series of strings, each terminated by a null, the series terminated by an additional null, containing the environment variables. (env)
+<ul>The format for each variable setting is <tt>NAME=VALUE</tt>.</ul>
+</ol>
+
+<p>If <code>y</code> is given a positive argument, all these cells are
+pushed onto the stack as if the argument was non-positive.
+However, <code>y</code> then goes on to copy the <i>argument</i>th
+stack cell (counting from the top) into a temporary location,
+subsequently removing all the cells
+it pushed onto the stack.  It then pushes the temporary cell
+onto the stack.  For example, <code>3y</code> will act as if only
+the handprint was pushed onto the stack.
+
+<p>An interesting side-effect of this behaviour is that if
+<code>y</code> is given an argument that exceeds the number of
+cells it pushes onto the stack, it can act as a 'pick'
+instruction on data that was on the stack before <code>y</code>
+was even executed.
+
+<hr><h2><a name="Scale">Scale: Extension and Customization</h2>
+
+<p>Funge-98 is totally customizable and scalable in terms of functionality, and
+non-trivial programs can now be written portably in it without any sort of
+directives.  The fingerprint mechanism allows for the definition of a
+virtually unlimited number of libraries in the form of fingerprinted extensions.  The
+handprint mechanism allows a program to identify exactly what interpreter it's
+running on.
+
+<hr><a name="Handprints"><h3>Handprints</h3>
+
+<p>A handprint is a bitstring which uniquely identifies
+a particular implementation (interpreter, compiler, etc.)
+of Funge-98.
+
+<p>These should really only be used by Funge-98 programs which know about <b>bugs</b>
+in a known interpreter, and want to work around them when their portable source
+is run on that interpreter.
+(<i>Features</i>, on the other hand, should be
+fingerprints: if everything is properly implemented, the current handprint <b>should</b> be
+irrelevant.  Fingerprints should always be used in preference to handprints
+when making a design decision - handprints are a fallback for the less-than-ideal case.)
+
+<p>Handprints
+generally stay they same between revisions of an interpreter.  They are
+accompanied by a version number when retrieved from <code>y</code>.
+
+<hr><a name="Fingerprints"><h3>Fingerprints</h3>
+
+<p>Extension and customization of Funge-98 are accomplished
+through the so-called "fingerprint mechanism".  No such mechanism
+exists for Befunge-93.
+
+<p>To be more precise, a fingerprint is a unique ID code which indicates a library
+of routines (a <i>fingerprinted extension</i>) to be assigned temporarily to what the instructions <code>A</code> to <code>Z</code> do.
+Multiple loaded fingerprints can overlap and overload, so even
+object-oriented-like inheritance is possible.
+
+<p>Generally speaking, these new semantics and instructions are only available
+to and only apply to the IP which loaded them.  The fingerprint spec itself may
+make exceptions to this rule, but it must clearly specify what they are.
+
+<p>The semantics of any given extension are generally
+coded directly into the interpreter.  There is
+no reason, however, they may not be made available in a dynamically-loadable form;
+but there is no convenient, standard format for such a form.
+
+<p>Whether the semantics are dynamically loaded from a disk file containing some
+form of executable code, or hard-wired into the Funge interpreter, is really a
+moot point from the Funge programmer's perspective.
+
+<p>However, it is useful to explain at this point for the benefit of both Funge
+programmers and potential Funge extension writers, that there are two classes of
+fingerprinted extensions: those that interact with and change the behaviour of the underlying
+Funge Virtual Machine and/or are not re-entrant (<i>feral extensions</i>), and
+those which are self-contained and re-entrant (<i>tame extensions</i>).
+
+<p>The main difference is that a feral extension cannot simply or easily be "dropped into" a Funge interpreter which is not aware of it.  When specifying fingerprinted extensions for public use, please try to make them as tame as possible - although many times it is unavoidable to have a feral fingerprint in order to accomplish a certain semantic goal, such as program control of proprietary interpreter features.
+
+<p>The <code>(</code> "Load Semantics" instruction
+loads the semantics for a given fingerprint
+onto any or all of the
+instructions <code>A</code> to <code>Z</code>.
+<code>(</code> pops a <i>count</i>.
+It then pops <i>count</i> cells.
+For each cell that it pops, it
+multiplies a temporary value
+(which is initially zero) by 256,
+and adds the cell value to it.
+
+<p>In this way, <code>(</code>
+builds a fingerprint.  This mechanism makes it
+simple to express large fingerprints
+like 0x452e472e in printable ASCII
+such as <code>".G.E"4( ... )</code>, while not
+requiring the use of ASCII as the medium for all fingerprints.
+
+<p><code>(</code> then uses this fingerprint to
+locate and load a set of semantics for the
+instructions <code>A</code> to <code>Z</code>.  If the Funge implementation
+cannot find the correct library for the given
+fingerprint, <code>(</code> acts like <code>r</code>.
+If, however, the semantic library load is successful,
+the new fingerprint, then a 1, are pushed onto
+the stack (to be accepted by a subsequent <code>)</code> instruction.)
+
+<p>The corresponding <code>)</code> "Unload Semantics" instruction
+unloads the semantics for a given fingerprint
+from any or all of the
+instructions <code>A</code> to <code>Z</code>
+(even if that fingerprint had never been loaded before).
+It pops a <i>count</i> and builds a fingerprint in exactly
+the same way.
+
+<p><code>()</code> in Funge are kind of like "use x ... no x" in Perl.
+The interpreter-writer or interpreter-customizer is allowed to make
+fingerprints do anything they like, and they may implement
+fingerprints however they like, but they have to follow some general rules
+as a 'contract' between the fingerprint and the fingerprint user.
+
+<ul>
+<li>A fingerprint should not affect the semantics of any instructions
+    besides <code>A</code> to <code>Z</code>, except under exceptional circumstances
+    which must be clearly documented in the fingerprint's spec.
+<li>When loaded, a fingerprint which implements <code>A</code> and <code>B</code>
+    semantics should act something like:
+
+<ul>save(<code>A</code>); bind(<code>A</code>, myAsemantic()); save(<code>B</code>); bind(<code>B</code>, myBsemantic());</ul>
+
+<li>When unloaded, the same fingerprint should act something like
+
+<ul>restore(<code>B</code>); restore(<code>A</code>);</ul>
+
+<li>In this sense, 'bind' means to change what the execution of an instruction does in the current Funge-98 program.
+<li>'save' means to save (push onto a stack) the semantics of an instruction for later use.
+<li>'restore' means to recall (pop from a stack) the semantics of an instruction from the last saved version.
+</ul>
+
+<p>This allows 'overloading' fingerprints.
+Say three fingerprints are implemented on your interpreter,
+
+<ul>
+<li><code>E.G.</code> which implements <code>D</code> as 'Destroy' and <code>R</code> as 'Restore'
+<li><code>TEST</code> which implements <code>S</code> as 'Send', <code>R</code> as 'Receive', and <code>E</code> as 'Encrypt'
+<li><code>WORK</code> which implements <code>S</code> as 'Slice', <code>D</code> as 'Dice', <code>P</code> as 'Puree'
+</ul>
+
+<p>With these, the Funge programmer ought to be able to make code like:
+
+<p><code>".G.E"4( ... "TSET"4( ... "KROW"4( ... S ... ) ... ) ... )</code>
+
+<p>Here, the <code>S</code> instruction indicates the 'Slice' instruction in the
+WORK fingerprint, not 'Send' in TEST.  But if it was written as:
+
+<p><code>"KROW"4( ... "TSET"4( ... ".G.E"4( ... S ... ) ... ) ... )</code>
+
+<p>The <code>S</code> would indicate 'Send' from TEST, since there is no <code>S</code> in E.G.,
+and a <code>D</code> instruction in the same location would indicate 'Destroy'
+in E.G., but <code>P</code> would be a 'Puree' from WORK, because it's not
+defined in either TEST or E.G.
+
+<hr><a name="Registry"><h3>Funge Central Registry</h3>
+
+<p>The Funge Central Registry is an online database located
+at <code><A HREF="http://www.catseye.mb.ca/esoteric/befunge/">http://www.catseye.mb.ca/esoteric/befunge/</A></code>.
+Before developing and releasing your own Funge-98 implementation
+or extension, please register all applicable handprints
+and fingerprints you will require here.
+
+<p>This system is in place both to reduce conflicts between fingerprints
+and handprints world-wide, ensuring their uniqueness, and to
+provide a quick reference to all known extant handprints and
+fingerprints.
+
+<p>There really are no standard libraries in Befunge.
+A Funge-98 interpreter need not implement any fingerprints whatsoever.
+Funge-98 "standard" libraries are no more than "officially sanctioned"
+extensions, catalogued in the Registry by their fingerprints.  Since
+extensions are forever accumulating, see the registry for a list of
+"standard" fingerprints.
+
+<hr><a name="Appendix"><h2>Appendix</h2>
+<a name="Quickref"><h3>Instruction Quick Reference</h3>
+
+<p><code>/</code> modifiers:
+
+<ul>
+<li><code>98</code> Funge-98 only, not in Befunge-93.
+<li><code>2D</code> Minimum 2 dimensions (not in Unefunge).
+<li><code>3D</code> Minimum 3 dimensions (not in Unefunge or Befunge).
+<li><code>c</code> Concurrent Funge.  Check <code>y</code> to see if these instructions are implemented.
+<li><code>f</code> Filesystem Funge.  Check <code>y</code> to see if these instructions are implemented.
+</ul>
+
+<p><table border=1>
+<tr><th rowspan=2>Decimal</th><th rowspan=2>ASCII</th><th rowspan=2>Instruction           </th><th>Stack Before</th><th>Stack After</th><th rowspan=2>Other Effects</th></tr>
+<tr><td colspan=2 align=center><i>(bottom ... top)</i></td></tr>
+<tr><td>32 </td><td>space </td><td>Space                    </td><td>&nbsp;</td></td><td>&nbsp;</td><td>not normally executed</td></tr>
+<tr><td>33 </td><td><code>!</code> </td><td>Logical Not         </td><td>b    </td><td>NOT b</td><td>&nbsp;</td></tr>
+<tr><td>34 </td><td><code>"</code> </td><td>Toggle Stringmode   </td><td>&nbsp;</td><td>&nbsp;</td><td>stringmode &lt;- NOT stringmode</td></tr>
+<tr><td>35 </td><td><code>#</code> </td><td>Trampoline                </td><td>&nbsp;</td><td>&nbsp;</td><td>pos &lt;- pos + delta</td></tr>
+<tr><td>36 </td><td><code>$</code> </td><td>Pop                 </td><td>n </td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>37 </td><td><code>%</code> </td><td>Remainder           </td><td>a b </td><td>a REM b </td><td>&nbsp;</td></tr>
+<tr><td>38 </td><td><code>&amp;</code> </td><td>Input Integer   </td><td>&nbsp;</td><td>a </td><td>a = readint()</td></tr>
+<tr><td>39 </td><td><code>'</code> </td><td>Fetch Character/98  </td><td>&nbsp;</td><td>c </td><td>pos &lt;- pos + delta</td></tr>
+<tr><td>40 </td><td><code>(</code> </td><td>Load Semantics/98   </td><td>en..e1 n </td><td>f 1 </td><td>overloads A-Z</td></tr>
+<tr><td>41 </td><td><code>)</code> </td><td>Unload Semantics/98 </td><td>en..e1 n </td><td>&nbsp;</td><td>unloads last A-Z</td></tr>
+<tr><td>42 </td><td><code>*</code> </td><td>Multiply            </td><td>a b </td><td>a * b </td><td>&nbsp;</td></tr>
+<tr><td>43 </td><td><code>+</code> </td><td>Add                 </td><td>a b </td><td>a + b </td><td>&nbsp;</td></tr>
+<tr><td>44 </td><td><code>,</code> </td><td>Output Character    </td><td>c </td><td>&nbsp;</td><td>writechar(c)</td></tr>
+<tr><td>45 </td><td><code>-</code> </td><td>Subtract            </td><td>a b </td><td>a - b</td><td>&nbsp;</td></tr>
+<tr><td>46 </td><td><code>.</code> </td><td>Output Integer      </td><td>a </td><td>&nbsp;</td><td>writeint(a)</td></tr>
+<tr><td>47 </td><td><code>/</code> </td><td>Divide              </td><td>a b </td><td>a / b</td><td>&nbsp;</td></tr>
+<tr><td>48 </td><td><code>0</code> </td><td>Push Zero           </td><td>&nbsp;</td><td>0 </td><td>&nbsp;</td></tr>
+<tr><td>49 </td><td><code>1</code> </td><td>Push One            </td><td>&nbsp;</td><td>1 </td><td>&nbsp;</td></tr>
+<tr><td>50 </td><td><code>2</code> </td><td>Push Two            </td><td>&nbsp;</td><td>2 </td><td>&nbsp;</td></tr>
+<tr><td>51 </td><td><code>3</code> </td><td>Push Three          </td><td>&nbsp;</td><td>3 </td><td>&nbsp;</td></tr>
+<tr><td>52 </td><td><code>4</code> </td><td>Push Four           </td><td>&nbsp;</td><td>4 </td><td>&nbsp;</td></tr>
+<tr><td>53 </td><td><code>5</code> </td><td>Push Five           </td><td>&nbsp;</td><td>5 </td><td>&nbsp;</td></tr>
+<tr><td>54 </td><td><code>6</code> </td><td>Push Six            </td><td>&nbsp;</td><td>6 </td><td>&nbsp;</td></tr>
+<tr><td>55 </td><td><code>7</code> </td><td>Push Seven          </td><td>&nbsp;</td><td>7 </td><td>&nbsp;</td></tr>
+<tr><td>56 </td><td><code>8</code> </td><td>Push Eight          </td><td>&nbsp;</td><td>8 </td><td>&nbsp;</td></tr>
+<tr><td>57 </td><td><code>9</code> </td><td>Push Niner          </td><td>&nbsp;</td><td>9 </td><td>&nbsp;</td></tr>
+<tr><td>58 </td><td><code>:</code> </td><td>Duplicate           </td><td>v </td><td>v v </td><td>&nbsp;</td></tr>
+<tr><td>59 </td><td><code>;</code> </td><td>Jump Over/98        </td><td>&nbsp;</td><td>&nbsp;</td><td>nothing executed until next semicolon</td></tr>
+<tr><td>60 </td><td><code>&lt;</code> </td><td>Go West          </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- (-1,0)</td></tr>
+<tr><td>61 </td><td><code>=</code> </td><td>Execute/98/f        </td><td>STR </td><td>r</td><td>r = system-execute(STR)</td></tr>
+<tr><td>62 </td><td><code>&gt;</code> </td><td>Go East          </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- (1,0)</td></tr>
+<tr><td>63 </td><td><code>?</code> </td><td>Go Away             </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- (1,0)?(-1,0)?(0,1)?(0,-1)</td></tr>
+<tr><td>64 </td><td><code>@</code> </td><td>Stop                </td><td>&nbsp;</td><td>&nbsp;</td><td>halt IP</td></tr>
+<tr><td>65-90 </td><td><code>A-Z</code>                         </td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Fingerprint-Defined/98</td></tr>
+<tr><td>91 </td><td><code>[</code> </td><td>Turn Left/98/2D     </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- rot(-90, delta)</td></tr>
+<tr><td>92 </td><td><code>\</code> </td><td>Swap                </td><td>a b </td><td>b a </td><td>&nbsp;</td></tr>
+<tr><td>93 </td><td><code>]</code> </td><td>Turn Right/98/2D    </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- rot(90, delta)</td></tr>
+<tr><td>94 </td><td><code>^</code> </td><td>Go North/2D         </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- (0,-1)</td></tr>
+<tr><td>95 </td><td><code>_</code> </td><td>East-West If        </td><td>&nbsp;b </td><td>&nbsp;</td><td>delta &lt;- if (b) (-1,0) else (1,0)</td></tr>
+<tr><td>96 </td><td><code>`</code> </td><td>Greater Than </td><td>&nbsp;a b </td><td>a > b </td><td>either 1 or 0 </td></tr>
+<tr><td>97 </td><td><code>a</code> </td><td>Push Ten/98         </td><td>&nbsp;</td><td>10 </td><td>&nbsp;</td></tr>
+<tr><td>98 </td><td><code>b</code> </td><td>Push Eleven/98      </td><td>&nbsp;</td><td>11 </td><td>&nbsp;</td></tr>
+<tr><td>99 </td><td><code>c</code> </td><td>Push Twelve/98      </td><td>&nbsp;</td><td>12 </td><td>&nbsp;</td></tr>
+<tr><td>100 </td><td><code>d</code> </td><td>Push Thirteen/98   </td><td>&nbsp;</td><td>13 </td><td>&nbsp;</td></tr>
+<tr><td>101 </td><td><code>e</code> </td><td>Push Fourteen/98   </td><td>&nbsp;</td><td>14 </td><td>&nbsp;</td></tr>
+<tr><td>102 </td><td><code>f</code> </td><td>Push Fifteen/98    </td><td>&nbsp;</td><td>15 </td><td>&nbsp;</td></tr>
+<tr><td>103 </td><td><code>g</code> </td><td>Get                </td><td>Va </td><td>v </td><td>v = fetch-funge-space(offset+Va)</td></tr>
+<tr><td>104 </td><td><code>h</code> </td><td>Go High/98/3D      </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- (0,0,-1)</td></tr>
+<tr><td>105 </td><td><code>i</code> </td><td>Input File/98/f    </td><td>Va f STR </td><td>Va Vb </td><td>inputs file</td></tr>
+<tr><td>106 </td><td><code>j</code> </td><td>Jump Forward/98    </td><td>s </td><td>&nbsp;</td><td>pos &lt;- pos + delta * s</td></tr>
+<tr><td>107 </td><td><code>k</code> </td><td>Iterate/98         </td><td>n </td><td>&nbsp;</td><td>execute next instruction now, n times</td></tr>
+<tr><td>108 </td><td><code>l</code> </td><td>Go Low/98/3D       </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- (0,0,1)</td></tr>
+<tr><td>109 </td><td><code>m</code> </td><td>High-Low If/98/3D  </td><td>b </td><td>&nbsp;</td><td>delta &lt;- if (b) (0,0,-1) else (0,0,1)</td></tr>
+<tr><td>110 </td><td><code>n</code> </td><td>Clear Stack/98     </td><td>en..e1 </td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>111 </td><td><code>o</code> </td><td>Output File/98/f   </td><td>Va Vb f STR </td><td>&nbsp;</td><td>outputs file</td></tr>
+<tr><td>112 </td><td><code>p</code> </td><td>Put			</td><td>v Va </td><td>&nbsp;</td><td>store-funge-space(offset+Va,v)</td></tr>
+<tr><td>113 </td><td><code>q</code> </td><td>Quit/98            </td><td>r </td><td>&nbsp;</td><td>immediate exit, returncode = r</td></tr>
+<tr><td>114 </td><td><code>r</code> </td><td>Reflect/98         </td><td>&nbsp;</td><td>&nbsp;</td><td>delta &lt;- delta * -1</td></tr>
+<tr><td>115 </td><td><code>s</code> </td><td>Store Character/98 </td><td>c </td><td>&nbsp;</td><td>store-funge-space(position+delta,v) </td></tr>
+<tr><td>116 </td><td><code>t</code> </td><td>Split/98/c         </td><td>&nbsp;</td><td>&nbsp;</td><td>Split IP</td></tr>
+<tr><td>117 </td><td><code>u</code> </td><td>Stack Under Stack/98 </td><td>n </td><td>(en..e1) </td><td>&nbsp;</td></tr>
+<tr><td>118 </td><td><code>v</code> </td><td>Go South/2D        </td><td>&nbsp; </td><td>&nbsp;</td><td>delta &lt;- (0,1)</td></tr>
+<tr><td>119 </td><td><code>w</code> </td><td>Compare/98/2D      </td><td>a b </td><td>&nbsp;</td><td>if (a&gt;b) ']' elsif (a&lt;b) '[' else 'z'</td></tr>
+<tr><td>120 </td><td><code>x</code> </td><td>Absolute Delta/98  </td><td>Va </td><td>&nbsp;</td><td>delta &lt;- Va</td></tr>
+<tr><td>121 </td><td><code>y</code> </td><td>Get SysInfo/98     </td><td>c </td><td>en(..e1) </td><td>&nbsp;</td></tr>
+<tr><td>122 </td><td><code>z</code> </td><td>No Operation/98    </td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>123 </td><td><code>{</code> </td><td>Begin Block/98     </td><td>en..e1 n </td><td>(en..e1)&nbsp;</td><td>offset &lt;- pos + delta, etc</td></tr>
+<tr><td>124 </td><td><code>|</code> </td><td>North-South If/2D	</td><td>b </td><td>&nbsp;</td><td>delta &lt;- if (b) (0,-1) else (0,1)</td></tr>
+<tr><td>125 </td><td><code>}</code> </td><td>End Block/98		</td><td>en..e1 n </td><td>(en..e1)&nbsp;</td><td>offset &lt;- SOSS Va, etc</td></tr>
+<tr><td>126 </td><td><code>~</code> </td><td>Input Character    </td><td>&nbsp;</td><td>c </td><td>c = readchar()</td></tr>
+</table>
+
+<hr><a name="Concurrent"><h3>Concurrent Funge-98</h3>
+
+<p>Befunge-93 does not allow for multithreaded execution.
+However, Concurrent Funge-98, a superset of Funge-98,
+defines a list of any number of
+concurrently running instruction pointers called the
+<i>IP list</i>.  In Concurrent Funge, IP's are sometimes
+called <i>threads</i> and each has its own
+location, delta, and stack.
+
+<p>You can also think of a Concurrent Funge-98 interpreter as having
+an internal and imaginary <i>clock</i> which produces
+<i>ticks</i> sequentially.  Each tick, the
+IP list is processed: instructions encountered by each IP are dealt with
+in the sequence the IPs appear on the list, and each IP then moves
+as specified by its delta.
+
+<p>The list is always processed repetitively, sequentially, and in the same
+direction, and when IP's are deleted they fall out and the next one which
+would normally execute anyway actually executes.
+
+<p>Creating additional IP's is done with the <code>t</code> "Split" instruction,
+available in Concurrent Funge-98 only.  It
+causes the current IP to be duplicated, and this duplicate is added to the
+IP list such that it is executed for the first time <i>before</i>
+the parent IP is next executed.
+
+<p>When a child IP is borne unto Funge-Space thus, its location, storage
+offset, and stack are all copied verbatim from the parent IP's.  The child
+IP's delta is reversed (a la <code>r</code>) from its parent's, though.
+
+<p>The <code>@</code> "Stop" instruction kills the current IP.
+If the current IP is the only active IP in the IP list,
+the program ends.  If it
+was not the last in the IP list, there would then be a gap in
+the list: in this case the top part of the list "shifts down" and the
+next thread in the list is executed.
+
+<hr><a name="Lahey"><h3>Lahey-Space</h3>
+
+<p>Lahey-Space is a mathematical model of the space used in Funge-98.
+
+<p>The requirements for a line in Lahey-space are the following:
+Starting from the origin,
+no matter what direction you head, you eventually reach the origin.
+If you go the other way you reach the origin from the other direction.
+
+<p>We surmise that if you head out on a Lahey-line, you would eventually
+return along the same Lahey-line, heading in the same direction,
+but coming from the other direction.
+This would mean you would eventually repeat your path, and (in Funge terms)
+have consistant wrapping through unlimited space.
+
+<p>Now, imagine a sphere of radius one centered one unit above the origin.
+Imagine a plane placed two units above the origin, i.e. resting on top of the sphere.
+
+<p><center><img src="laheys.jpg" alt="(laheys.jpg - Chris Hall's POVRay rendering of Lahey-Space)"></center>
+
+<p>One thing you might notice is that when you draw a straight line from the
+origin to any point on the plane, you intersect the sphere
+exactly twice, once at the origin, once in a unique location.
+In this manner, you can map the plane uniquely onto the sphere.
+
+<p>Now, each normal line from a point A on the plane to a point B on the plane can be
+transformed into a Lahey-line, which in our model is represented as an arc
+of the sphere containing both point A' on the sphere and point B' on the sphere.
+This arc can then be extended into a full circle, going 'around' the sphere to wrap.<P>
+
+<hr><A name="Topologies"><h3>Other Topologies</h3>
+
+<p>As mentioned, Funge is a family of programming languages, and Befunge has many relatives and descendants.  This document only covers Cartesian Funges.  Other Funges, such as Honefunges (hex-net topology) and Kleinefunges (Klein-bottles) are certainly possible.
+
+<p>However, Advanced Funges may not find either torodial space <i>or</i> Lahey-space sufficient
+for complex topologies, so this spec provides a language for
+defining wrapping behaviour in a mathematical way.
+
+<p>We can define an a <i>wrapping function</i> W()
+along the lines of:
+<ul><code>W(x,y) = (x&lt;0 -&gt; x:=79,
+x&gt;79 -&gt; x:=0, y&lt;0 -&gt; y:=24, y&gt;24 -&gt; y:=0)</code></ul>
+
+for Befunge-93.  Complex topologies can define their own
+wrapping functions.  If these functions are strictly and clearly specified in the documentation of the Advanced Funge in question, it will save a lot of confusion to users, and is highly recommended.
+
+<hr>
+<br>Copyright <img src="/img/copyright.gif" alt="(c)">2000 Chris Pressey, <a href="http://www.catseye.mb.ca/">Cat's Eye Technologies</a>.
+Permission is granted to republish this work on the condition that the
+above copyright message and this message remain included unchanged in all copies.
+</body>
+</html>

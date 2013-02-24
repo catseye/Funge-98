@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>Funge-98 Documentation: TOYS fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Funge-98 Standard Toys</h1>
+<h3>Fingerprint 0x544f5953 ('TOYS')</h3>
+</center>
+
+<p>Under development.
+
+<p>After successfully loading TOYS, the instructions
+<tt>A</tt>, <tt>B</tt>, <tt>C</tt>, <tt>D</tt>,
+<tt>E</tt>, <tt>F</tt>, <tt>G</tt>, 
+<tt>H</tt>, <tt>I</tt>, <tt>J</tt>, <tt>K</tt>,
+<tt>L</tt>, <tt>M</tt>, <tt>N</tt>, <tt>O</tt>,
+<tt>P</tt>, <tt>Q</tt>, 
+<tt>R</tt>, <tt>S</tt>, <tt>T</tt>, <tt>U</tt>, <tt>V</tt>, <tt>W</tt>,
+<tt>X</tt>, <tt>Y</tt>, and <tt>Z</tt>
+take on new semantics (and INTERCAL-esque names).
+
+<P><tt>C</tt> ('bracelet')
+pops three vectors off the stack and performs
+a low-order copy of Funge-Space.
+
+<p><tt>K</tt> ('scissors')
+pops three vectors off the stack and performs
+a high-order copy of Funge-Space.
+
+<p><tt>M</tt> ('kittycat')
+pops three vectors off the stack and performs
+a low-order move (copy & erase original) of Funge-Space.
+
+<p><tt>V</tt> ('dixiecup')
+pops three vectors off the stack and performs
+a high-order move of Funge-Space.
+
+<p><tt>S</tt> ('chicane')
+pops two vectors off the stack, then a cell,
+then fills that area of Funge-Space homogenously with that cell's
+value.
+
+<p>Which order a copy or move takes is important if you copy
+or move to an overlapping area.  Ensure when implementing these
+that the order is preserved in all dimensions.
+
+<p>The first two vectors are like the arguments to <tt>o</tt>.
+In all except <tt>S</tt>, the third is the destination, relative
+to the origin.
+
+<p><tt>J</tt> ('fishhook')
+pops a value off the stack, and causes the current
+column (y coordinate) of Funge-space
+to be translated north (if value is negative) or south (if positive)
+that many rows.
+
+<p><tt>O</tt> ('boulder')
+pops a value off the stack, and causes the current
+row (x coordinate) of Funge-space
+to be translated west (if value is negative) or east (if positive)
+that many columns.
+
+<p><tt>L</tt> ('corner')
+works like <tt>'</tt> except it picks up the cell
+to the "left" of the IP's line and does not skip over anything.
+(Historians may note that this works like "Get Left Hand" did
+in Befunge-97.)  The cell to the "left" of the IP is the IP's
+position, plus its delta rotated -90 degrees about the Z axis
+(a la <tt>[</tt>)
+
+<p><tt>R</tt> ('can opener')
+is a corresponding instruction that mirrors <tt>L</tt>
+and works to the right, rotated 90 degrees about the Z axis
+("Get Right Hand" from Befunge-97)
+
+<p><tt>I</tt> ('doric column')
+pops a value off the stack, increments it,
+and pushes it back onto the stack.
+
+<p><tt>D</tt> ('toilet seat')
+pops a value off the stack, decrements it,
+and pushes it back onto the stack.
+
+<p><tt>N</tt> ('lightning bolt')
+pops a value off the stack, negates it,
+and pushes it back onto the stack.
+
+<p><tt>H</tt> ('pair of stilts')
+pops a value <i>b</i> off the stack, then a value
+<i>a</i>, then binary-shifts <i>a</i> <i>b</i> places left if <i>b</i>
+is positive, or |<i>b</i>| places right if <i>b</i> is negative.
+
+<p><tt>A</tt> ('gable')
+pops a cell <i>n</i> off the stack, then another cell,
+then pushes <i>n</i> copies of that cell onto the stack.
+
+<p><tt>B</tt> ('pair of shoes')
+pops two cells off the stack and pushes the result
+of a "butterfly" bit operation.
+
+<p><tt>E</tt> ('pitchfork head')
+pops all values off the stack and pushes their sum
+back onto it.
+
+<p><tt>P</tt> ('mailbox')
+pops all values off the stack and pushes their product
+back onto it.
+
+<p><tt>F</tt> ('calipers')
+pops a vector, then a value <i>i</i>.  Treating
+the rest of the
+stack as <i>j</i> groups of <i>i</i> cells each, it writes this
+2D matrix into Funge-space in row-major order,
+with it's least point as the given vector.
+
+<p><tt>G</tt> ('counterclockwise')
+pops a vector, then a value <i>i</i>.  It then
+pushes onto the stack <i>j</i> groups of <i>i</i> cells each
+which it retrieves as a 2D matrix in Funge-space in row-major
+order, the least point of which being the vector supplied to it.
+
+<p><tt>Q</tt> ('necklace')
+pops a value off the stack and places it into the cell
+directly behind the IP (kind of like <tt>s</tt>, except behind, and
+no cell is skipped over.)
+
+<p><tt>T</tt> ('barstool')
+pops a dimension number off the stack; if it's
+a 0, acts like <tt>_</tt>; if it's 1, acts like <tt>|</tt>;
+if it's 2, acts like <tt>m</tt>; etc. depending on
+the number of available dimensions as appropriate of course.
+
+<p><tt>U</tt> ('tumbler')
+is like <tt>?</tt> but one-shot.  When executed, it
+randomly transmutes into one of <tt>&lt;</tt>, <tt>&gt;</tt>,
+<tt>^</tt>, <tt>v</tt>, <tt>h</tt>, or <tt>l</tt>, depending on
+the number of available dimensions as appropriate of course.
+
+<p><tt>W</tt> ('television antenna')
+pops a vector off the stack, then a value.
+If the cell at that vector (plus the storage offset)
+in Funge-Space (a la <tt>g</tt>)
+is equal to that value, nothing happens.  If the cell in space
+is less than the value, it pushes the value and the vector (inverted)
+back onto the stack, and backs up the IP (subtracts the IP's
+delta from it's position, sort of a 'wait to try again'
+condition, useful mainly in Concurrent Funge.)  If
+the cell in space is greater than that value, acts like <tt>r</tt>.
+
+<p><tt>X</tt> ('buried treasure')
+increments the IP's x coordinate.
+
+<p><tt>Y</tt> ('slingshot')
+increments the IP's y coordinate.
+
+<p><tt>Z</tt> ('barn door')
+increments the IP's z coordinate.
+
+<p>These three instructions are useful at the end of a line, to
+indicate "proceed to next line then wrap".  Note the IP's delta
+motion is still fully in effect.
+</body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>Funge-98 Documentation: TURT fingerprint</title>
+</head>
+<body bgcolor="#FFFFC0">
+<center><h1>Simple Turtle Graphics Library</h1>
+<h3>Fingerprint 0x54555254 ('TURT')</h3>
+</center>
+
+<p>Under development.
+
+<p>The TURT fingerprint provides a simple interface to a simple
+"drawing turtle-robot simulator".
+
+<p>After successfully loading TURT, several instructions
+take on new semantics.
+
+<p>These instructions pop one value off the stack:
+
+<ul>
+<li><tt>L</tt> 'Turn Left' (angle in degrees)
+<li><tt>R</tt> 'Turn Right' (angle in degrees)
+<li><tt>H</tt> 'Set Heading' (angle in degrees, relative to 0deg, east)
+<li><tt>F</tt> 'Forward' (distance in pixels)
+<li><tt>B</tt> 'Back' (distance in pixels)
+<li><tt>P</tt> 'Pen Position' (0 = up, 1 = down)
+<li><tt>C</tt> 'Pen Colour' (24-bit RGB)
+<li><tt>N</tt> 'Clear Paper with Colour' (24-bit RGB)
+<li><tt>D</tt> 'Show Display' (0 = no, 1 = yes)
+</ul>
+
+<p>These pop two values each:
+<ul>
+<li><tt>T</tt> 'Teleport' (x, y coords relative to origin; 00T = home)
+</ul>
+
+<p>These push one value each:
+<ul>
+<li><tt>E</tt> 'Query Pen' (0 = up, 1 = down)
+<li><tt>A</tt> 'Query Heading' (positive angle relative to east)
+</ul>
+
+<p>These push two values each:
+<ul>
+<li><tt>Q</tt> 'Query Position' (x, y coordinates)
+</ul>
+
+<p>These push four values each:
+<ul>
+<li><tt>U</tt> 'Query Bounds' (two pairs of x, y coordinates)
+</ul>
+
+<p>And these don't even use the stack:
+<ul>
+<li><tt>I</tt> 'Print current Drawing' (if possible)
+</ul>
+
+<p>To keep this fingerprint tame, a single Turtle and display
+is defined to be shared amongst all IP's.  The turtle is not
+defined to wrap if it goes out of bounds (after all this interface
+might just as well be used to drive a <b>real</b> turtle robot.)
+
+</body>
+</html>
