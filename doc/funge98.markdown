@@ -9,19 +9,19 @@ converted to Markdown: Feb 24 2013
 
 ### Table of Contents
 
--   #### [Introduction](#Introduction)
+-   [Introduction](#Introduction)
 
     -   [What is a Funge?](#Whatis)
     -   [About this Document](#About)
 
--   #### [The Funge Virtual Machine](#Machine)
+-   [The Funge Virtual Machine](#Machine)
 
     -   [Code and Data](#Code_Data)
     -   [Funge-Space](#Space)
     -   [Stack Stack](#Stack_Stack)
     -   [Funge Source File Format](#Format)
 
--   #### [Code: Program Flow](#Code)
+-   [Code: Program Flow](#Code)
 
     -   [Instruction Pointer](#IP)
     -   [Instructions](#Instructions)
@@ -30,14 +30,14 @@ converted to Markdown: Feb 24 2013
     -   [Flow Control](#Flow)
     -   [Decision Making](#Decision)
 
--   #### [Data: Cell Crunching](#Data)
+-   [Data: Cell Crunching](#Data)
 
     -   [Integers](#Integers)
     -   [Strings](#Strings)
     -   [Stack Manipulation](#Stack_Manipulation)
     -   [Stack Stack Manipulation](#Stack_Stack_Manipulation)
 
--   #### [Media: Communications and Storage](#Media)
+-   [Media: Communications and Storage](#Media)
 
     -   [Funge-Space Storage](#Storage)
     -   [Standard Input/Output](#Stdio)
@@ -45,13 +45,13 @@ converted to Markdown: Feb 24 2013
     -   [System Execution](#System)
     -   [System Information Retrieval](#Sysinfo)
 
--   #### [Scale: Extension and Customization](#Scale)
+-   [Scale: Extension and Customization](#Scale)
 
     -   [Handprints](#Handprints)
     -   [Fingerprints](#Fingerprints)
     -   [Funge Central Registry](#Registry)
 
--   #### [Appendix](#Appendix)
+-   [Appendix](#Appendix)
 
     -   [Instruction Quick Reference](#Quickref)
     -   [Concurrent Funge-98](#Concurrent)
@@ -374,11 +374,14 @@ the *z* axis. These instructions are not available in Unefunge.
 To remember which is which, visualize yourself on the seat of a bicycle,
 looking down at the handlebars:
 
-  ------------- -------------- --------------
-  `+-| +-`      `+-+| |`       `-+ |-+`
-  `[`           ` `            `]`
-  `Turn Left`   `Go Forward`   `Turn Right`
-  ------------- -------------- --------------
+    +-          +-+          -+
+    |           | |           |
+    +-                       -+
+    
+    [                        ]
+    
+    Turn        Go           Turn
+    Left        Forward      Right
 
 The `r` "Reverse" instruction multiplies the IP's delta by -1. In two
 dimensions, this is the equivalent of reflecting the delta of the IP
@@ -611,8 +614,8 @@ backward-incompatibility with Befunge-93; programs that have multiple
 spaces and/or wrap while in stringmode will have to be changed to work
 the same under Funge-98.
 
-    Befunge-93      Befunge-98
-
+    Befunge-93              Befunge-98
+    
     "hello world"           "hello world"
     "hello   world"         "hello "::"world"
 
@@ -622,9 +625,9 @@ pushes the Funge character value of the next encountered cell (position
 skipping over the character (in no ticks). For example, the following
 two snippets perform the same function, printing a Q:
 
-`"Q",`
+    "Q",
 
-`'Q,`
+    'Q,
 
 `s` "Store Character" is the mirror image of the `'` instruction: this
 instead pops a value off the stack and writes it into (position +
@@ -1080,6 +1083,8 @@ either TEST or E.G.
 
 ### Funge Central Registry
 
+_Nota bene: information in this section is obsolete_
+
 The Funge Central Registry is an online database located at
 `http://www.catseye.mb.ca/esoteric/befunge/`. Before developing and
 releasing your own Funge-98 implementation or extension, please register
@@ -1113,91 +1118,21 @@ Appendix
 -   `f` Filesystem Funge. Check `y` to see if these instructions are
     implemented.
 
-Decimal
+"Before" column is the state of the TOSS before the instruction is
+executed.  "After" column is the state of the TOSS after the instruction
+is executed.  Both are notated from bottom (on the left) to top (on the
+right).
 
-ASCII
+    ASCII Instruction       Before   After     Other Effects
+    ----- -----------       ------   -----     -------------
+    space Space                                not normally executed
+    !     Logical Not       b        NOT b
+    "     Toggle Stringmode                    stringmode <- NOT stringmode
+    #     Trampoline                           pos <- pos + delta
+    $     Pop               n
+    %     Remainder         a b      a REM b
 
-Instruction
-
-Stack Before
-
-Stack After
-
-Other Effects
-
-*(bottom ... top)*
-
-32
-
-space
-
-Space
-
- 
-
- 
-
-not normally executed
-
-33
-
-`!`
-
-Logical Not
-
-b
-
-NOT b
-
- 
-
-34
-
-`"`
-
-Toggle Stringmode
-
- 
-
- 
-
-stringmode \<- NOT stringmode
-
-35
-
-`#`
-
-Trampoline
-
- 
-
- 
-
-pos \<- pos + delta
-
-36
-
-`$`
-
-Pop
-
-n
-
- 
-
- 
-
-37
-
-`%`
-
-Remainder
-
-a b
-
-a REM b
-
- 
+* * * * *
 
 38
 
