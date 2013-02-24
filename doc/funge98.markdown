@@ -1154,260 +1154,30 @@ right).
     :     Duplicate            v         v v
     ;     Jump Over/98                             nothing executed until next ;
     <     Go West                                  delta <- (-1,0)
+    =     Execute/98/f         STR       r         r = system-execute(STR)
+    >     Go East                                  delta <- (1,0)
+    ?     Go Away                                  delta <- (1,0)?(-1,0)?(0,1)?(0,-1)
+    @     Stop                                     halt IP
+    A-Z                                            Fingerprint-Defined/98
+    [     Turn Left/98/2D                          delta <- rot(-90, delta)
+    \     Swap                 a b       b a
+    ]     Turn Right/98/2D                         delta <- rot(90, delta)
+    ^     Go North/2D                              delta <- (0,-1)
+    _     East-West If                             delta <- if (b) (-1,0) else (1,0)
+    `     Greater Than         a b       a > b     either 1 or 0
+    a     Push Ten/98                    10
+    b     Push Eleven/98                 11
+    c     Push Twelve/98                 12
+    d     Push Thirteen/98               13
+    e     Push Fourteen/98               14
+    f     Push Fifteen/98                15
+    g     Get                  Va        v         v = fetch-funge-space(offset+Va)
+    h     Go High/98/3D                            delta <- (0,0,-1)
+    i     Input File/98/f      Va f STR  Va Vb     inputs file
+    j     Jump Forward/98      s                   pos <- pos + delta * s
+    
 
 * * * * *
-
-61
-
-`=`
-
-Execute/98/f
-
-STR
-
-r
-
-r = system-execute(STR)
-
-62
-
-`>`
-
-Go East
-
- 
-
- 
-
-delta \<- (1,0)
-
-63
-
-`?`
-
-Go Away
-
- 
-
- 
-
-delta \<- (1,0)?(-1,0)?(0,1)?(0,-1)
-
-64
-
-`@`
-
-Stop
-
- 
-
- 
-
-halt IP
-
-65-90
-
-`A-Z`
-
- 
-
- 
-
- 
-
-Fingerprint-Defined/98
-
-91
-
-`[`
-
-Turn Left/98/2D
-
- 
-
- 
-
-delta \<- rot(-90, delta)
-
-92
-
-`\`
-
-Swap
-
-a b
-
-b a
-
- 
-
-93
-
-`]`
-
-Turn Right/98/2D
-
- 
-
- 
-
-delta \<- rot(90, delta)
-
-94
-
-`^`
-
-Go North/2D
-
- 
-
- 
-
-delta \<- (0,-1)
-
-95
-
-`_`
-
-East-West If
-
- b
-
- 
-
-delta \<- if (b) (-1,0) else (1,0)
-
-96
-
-`` ` ``
-
-Greater Than
-
- a b
-
-a \> b
-
-either 1 or 0
-
-97
-
-`a`
-
-Push Ten/98
-
- 
-
-10
-
- 
-
-98
-
-`b`
-
-Push Eleven/98
-
- 
-
-11
-
- 
-
-99
-
-`c`
-
-Push Twelve/98
-
- 
-
-12
-
- 
-
-100
-
-`d`
-
-Push Thirteen/98
-
- 
-
-13
-
- 
-
-101
-
-`e`
-
-Push Fourteen/98
-
- 
-
-14
-
- 
-
-102
-
-`f`
-
-Push Fifteen/98
-
- 
-
-15
-
- 
-
-103
-
-`g`
-
-Get
-
-Va
-
-v
-
-v = fetch-funge-space(offset+Va)
-
-104
-
-`h`
-
-Go High/98/3D
-
- 
-
- 
-
-delta \<- (0,0,-1)
-
-105
-
-`i`
-
-Input File/98/f
-
-Va f STR
-
-Va Vb
-
-inputs file
-
-106
-
-`j`
-
-Jump Forward/98
-
-s
-
- 
-
-pos \<- pos + delta \* s
 
 107
 
