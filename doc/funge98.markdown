@@ -1163,7 +1163,7 @@ right).
     \     Swap                 a b       b a
     ]     Turn Right/98/2D                         delta <- rot(90, delta)
     ^     Go North/2D                              delta <- (0,-1)
-    _     East-West If                             delta <- if (b) (-1,0) else (1,0)
+    _     East-West If         b                   delta <- if (b) (-1,0) else (1,0)
     `     Greater Than         a b       a > b     either 1 or 0
     a     Push Ten/98                    10
     b     Push Eleven/98                 11
@@ -1181,7 +1181,7 @@ right).
     n     Clear Stack/98       en..e1
     o     Output File/98/f     Va Vb f STR         outputs file
     p     Put                  v Va                store-funge-space(offset+Va,v)
-    q     Quit/98                                  immediate exit, returncode = r
+    q     Quit/98              r                   immediate exit, returncode = r
     r     Reflect/98                               delta <- delta * -1
     s     Store Character/98   c                   store-funge-space(position+delta,v)
     t     Split/98/c                               Split IP
