@@ -2,8 +2,10 @@ Funge-98 Final Specification
 ============================
 
 Chris Pressey, Sept 11, 1998  
-revised for clarity: Sept 30 1998  
-converted to Markdown: Feb 24 2013
+revised for clarity: Sept 30, 1998  
+converted to Markdown: Feb 24, 2013  
+restored omissions in Markdown conversion
+  (thanks to: James Holderness): March 27, 2016
 
 * * * * *
 
@@ -877,30 +879,58 @@ contains many more cells (listed from top to bottom:)
         Funge-98
 
 2.  1 cell containing the number of bytes per cell (global env).
-
+    
+    aka cell size. Typically 4, could also be 2, 8, really really large,
+    infinity, etc. 
+    
 3.  1 cell containing the implementation's handprint (env).
 4.  1 cell containing the implementation's version number (env).
-
+    
+    If the version number contains points, they're stripped.
+    v2.01 == 201, v1.03.05 = 10305, v1.5g = 1507. Don't use non-numbers
+    in the version number to indicate 'personalizations' - change the
+    handprint instead.
+    
 5.  1 cell containing an ID code for the Operating Paradigm (global env)
     -   0 = Unavailable
-    -   1 = Equivalent to C-language system() call behaviour
+    -   1 = Equivalent to C-language `system()` call behaviour
     -   2 = Equivalent to interpretation by a specific shell or program
-
+        
+        This shell or program is specified by the interpreter but should
+        ideally be customizable by the interpreter-user, if applicable.
+        Befunge programs that run under this paradigm should document
+        what program they expect to interpret the string passed to `=`.
+        
     -   3 = Equivalent to interpretation by the same shell as started
         this Funge interpreter, if applicable
-
+        
+        If the interpreter supports this paradigm, then in this manner,
+        the user executing a Befunge source can easily choose which
+        shell to use for `=` instructions.
+        
     This value is included so the program can have a reasonable idea of
     what `=` will do. The values shown here are only the most basic set
     available at the time of publication. See the [Registry](#Registry)
     for any late-breaking headway into further Operating Paradigms.
+    
 6.  1 cell containing a path seperator character (global env)
-
+    
+    This is what path seperators for i and o filenames should look like.
+    
 7.  1 cell containing the number of scalars per vector (global env)
-
+    
+    aka number of dimensions. 2 for Befunge, 1 for Unefunge, 3 for
+    Trefunge.
+    
 8.  1 cell containing a unique ID for the current IP (ip)
-
+    
+    Only significant for Concurrent Funge. This ID differentiates this
+    IP from all others currently in the IP list.
+    
 9.  1 cell containing a unique team number for the current IP (ip)
-
+    
+    Only significant for NetFunge, BeGlad, and the like.
+    
 10. 1 vector containing the Funge-Space position of the current IP (ip)
 11. 1 vector containing the Funge-Space delta of the current IP (ip)
 12. 1 vector containing the Funge-Space storage offset of the current IP
@@ -909,23 +939,37 @@ contains many more cells (listed from top to bottom:)
     relative to the origin (env)
 14. 1 vector containing the greatest point which contains a non-space
     cell, relative to the least point (env)
-
-15. 1 cell containing current ((year - 1900) \* 256 \* 256) + (month \*
-    256) + (day of month) (env)
+    
+    These two vectors are useful to give to the `o` instruction to
+    output the entire program source as a text file.
+    
+15. 1 cell containing current ((year - 1900) \* 256 \* 256) +
+    (month \* 256) + (day of month) (env)
 16. 1 cell containing current (hour \* 256 \* 256) + (minute \* 256) +
     (second) (env)
 17. 1 cell containing the total number of stacks currently in use by the
     IP (size of stack stack) (ip)
 18. *size-of-stack-stack* cells containing size of each stack, listed
     from TOSS to BOSS (ip)
-
+    
+    Stack sizes are pushed as if they were measured **before** `y`
+    began pushing elements onto the stack.
+    
 19. a series of sequences of characters (strings), each terminated by a
     null, the series terminated by an additional double null, containing
     the command-line arguments. (env)
-
+    
+    This means any isolated argument can be a null string, but no two
+    consecutive arguments may be null strings - a rather contrived
+    scenario, null string arguments being rare in themselves.
+    
+    The first string is the name of the Funge source program being run.
+    
 20. a series of strings, each terminated by a null, the series
     terminated by an additional null, containing the environment
     variables. (env)
+    
+    The format for each variable setting is `NAME=VALUE`.
 
 If `y` is given a positive argument, all these cells are pushed onto the
 stack as if the argument was non-positive. However, `y` then goes on to
@@ -1046,9 +1090,13 @@ however they like, but they have to follow some general rules as a
     must be clearly documented in the fingerprint's spec.
 -   When loaded, a fingerprint which implements `A` and `B` semantics
     should act something like:
-
+    
+        save(A); bind(A, myAsemantic()); save(B); bind(B, myBsemantic());
+    
 -   When unloaded, the same fingerprint should act something like
-
+    
+        restore(B); restore(A);
+    
 -   In this sense, 'bind' means to change what the execution of an
     instruction does in the current Funge-98 program.
 -   'save' means to save (push onto a stack) the semantics of an
@@ -1067,12 +1115,12 @@ implemented on your interpreter,
 
 With these, the Funge programmer ought to be able to make code like:
 
-`".G.E"4( ... "TSET"4( ... "KROW"4( ... S ... ) ... ) ... )`
+    ".G.E"4( ... "TSET"4( ... "KROW"4( ... S ... ) ... ) ... )
 
 Here, the `S` instruction indicates the 'Slice' instruction in the WORK
 fingerprint, not 'Send' in TEST. But if it was written as:
 
-`"KROW"4( ... "TSET"4( ... ".G.E"4( ... S ... ) ... ) ... )`
+    "KROW"4( ... "TSET"4( ... ".G.E"4( ... S ... ) ... ) ... )
 
 The `S` would indicate 'Send' from TEST, since there is no `S` in E.G.,
 and a `D` instruction in the same location would indicate 'Destroy' in
@@ -1252,8 +1300,7 @@ Now, imagine a sphere of radius one centered one unit above the origin.
 Imagine a plane placed two units above the origin, i.e. resting on top
 of the sphere.
 
-![(laheys.jpg - Chris Hall's POVRay rendering of
-Lahey-Space)](laheys.jpg)
+![(laheys.jpg - Chris Hall's POVRay rendering of Lahey-Space)](laheys.jpg)
 
 One thing you might notice is that when you draw a straight line from
 the origin to any point on the plane, you intersect the sphere exactly
