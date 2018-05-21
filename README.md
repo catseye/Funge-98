@@ -19,7 +19,8 @@ This distribution contains only specification documents.  It does not
 contain any implementations.
 
 This distribution is hosted in a git repository, which is currently
-[available on GitHub](https://github.com/catseye/Funge-98).
+[available on GitHub](https://github.com/catseye/Funge-98).  Releases
+of this distribution are [available on catseye.tc](http://catseye.tc/distribution/Funge-98_distribution).
 
 External resources
 ------------------
@@ -31,6 +32,6 @@ External resources
 
 [Befunge-93]: http://catseye.tc/node/Befunge-93
 [Funge-98]: http://catseye.tc/node/Funge-98
-[FBBI]: http://catseye.tc/node/FBBI
+[FBBI]: https://github.com/catseye/FBBI
 [Cat's Eye Technologies]: http://catseye.tc/
 [Befunge Silver Jubilee Retrospective]: http://catseye.tc/view/The-Dossier/article/Befunge%20Silver%20Jubilee%20Retrospective.md
