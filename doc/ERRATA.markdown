@@ -7,15 +7,15 @@ Funge-98 Final Specification.  As collected in 2018.
 This document does not aim to list all the ambiguities in the
 spec.  There are several instances where some implementors have
 interpreted a statement one way, and other implementors have
-interpreted it another way.  These instances may or may not be
-listed in this document.  If they are, do not expect to find a
-canonical interpretation of these instances in this document.
+interpreted it another way.  Such instances may or may not be
+listed in this document, but if they are, please do not expect
+to find a normative interpretation of them here.
 
 Befunge-93 cells were not unsigned
 ----------------------------------
 
 Reported by James Holderness on January 16th, 2016, in
-[this Github issue](https://github.com/catseye/Funge-98/issues/2).
+[this GitHub issue](https://github.com/catseye/Funge-98/issues/2).
 
 In fact, cells in the original Befunge-93 implementation were
 `char` type, which ANSI C does not mandate as either signed or
@@ -29,7 +29,7 @@ Incorrect delta for south/north
 -------------------------------
 
 Reported by Bennett Bernardoni on June 21st, 2017, in
-[this Github issue](https://github.com/catseye/Funge-98/issues/5).
+[this GitHub issue](https://github.com/catseye/Funge-98/issues/5).
 
 Contra the statement in the section titled "Instruction Pointer",
 it is in fact the case that (0,-1) is called _north_ and is
