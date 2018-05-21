@@ -13,7 +13,7 @@ They are:
 
 *   [Funge-98 Final Specification](doc/funge98.markdown)
 *   [Funge-98 Fingerprints Library](library/)
-*   ERRATA (tbw)
+*   [Funge-98 ERRATA](doc/ERRATA.markdown)
 
 External resources
 ------------------
