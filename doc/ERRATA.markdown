@@ -20,7 +20,7 @@ Reported by [James Holderness](https://github.com/j4james)
 on January 16th, 2016, in
 [this GitHub issue](https://github.com/catseye/Funge-98/issues/2).
 
-In the section "Code and Data" the claim is made that, in
+In the section "Code and Data" the claim is made that
 Befunge-93 "defines unsigned 8-bit Funge-Space cells".
 
 In fact, cells in the original Befunge-93 implementation were
