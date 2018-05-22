@@ -26,7 +26,8 @@ Befunge-93 "defines unsigned 8-bit Funge-Space cells".
 In fact, cells in the original Befunge-93 implementation were
 `char` type, which ANSI C does not mandate as either signed or
 unsigned.  Because the compilers typically used to compile this
-code used signed chars, Befunge-93 was popularly understood to
+code used signed chars, and several prominent example programs
+relied on this behaviour, Befunge-93 was popularly understood to
 have signed cells, so if you are looking for a de facto standard
 for signedness of the cells in Befunge-93, that would probably be
 it.  But that's Befunge-93, not Funge-98, anyway.
