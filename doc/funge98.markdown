@@ -5,7 +5,8 @@ Chris Pressey, Sept 11, 1998
 revised for clarity: Sept 30, 1998  
 converted to Markdown: Feb 24, 2013  
 restored omissions in Markdown conversion
-  (thanks to: James Holderness): March 27, 2016
+  (thanks to: James Holderness): March 27, 2016  
+added [ERRATA](ERRATA.markdown) document: May 22, 2018
 
 * * * * *
 

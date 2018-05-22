@@ -1,7 +1,7 @@
 Funge-98 Specification Documents
 ================================
 
-*Distribution Revision: Summer 2018*
+Edition: May 22, 2018.
 
 **Funge-98** is a family of programming languages (primarily Befunge-98,
 Unefunge-98, and Trefunge-98) which was designed as a successor to
