@@ -623,10 +623,10 @@ the same under Funge-98.
     "hello   world"         "hello "::"world"
 
 There is also a `'` "Fetch Character" instruction in Funge-98. This
-pushes the Funge character value of the next encountered cell (position
-+ delta) onto the stack, then adds the delta to the position (like `#`),
-skipping over the character (in no ticks). For example, the following
-two snippets perform the same function, printing a Q:
+pushes the Funge character value of the next encountered cell
+(position + delta) onto the stack, then adds the delta to the position
+(like `#`), skipping over the character (in no ticks). For example,
+the following two snippets perform the same function, printing a Q:
 
     "Q",
 
